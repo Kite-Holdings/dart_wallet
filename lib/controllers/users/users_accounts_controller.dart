@@ -1,32 +1,30 @@
 
-import 'package:e_pay_gateway/controllers/users/user.dart';
 import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:aqueduct/aqueduct.dart';
+import 'package:e_pay_gateway/serializers/user_serializer.dart';
 
 
-class RegisterUserController extends Controller {
-  @override
-  @Operation.post()
-  FutureOr<RequestOrResponse> handle(Request request) async {
-    Map<String, String> _data = await request.body.decode();
-    print(_data);
-    String identifier = '50633';
-    String identifier_type = 'NationalID';
-    String username = 'test';
-    String phone_no = '2547xxxxxxxx';
-    String email = 'email@mail.mail';
-    User user = User();
-    Map<String, dynamic> newUser = await user.create(
-      identifier: identifier,
-      identifier_type: identifier_type,
-      username: username,
-      phone_no: phone_no,
-      email: email
-    );
+class UsersController extends ResourceController{
 
-    
+  @Operation.get()
+  Future<Response> getAll()async{
+    UserSerializer users = UserSerializer();
+    List<Map<String, dynamic>> _usersList = await users.getAll();
 
-
-    return Response.ok(newUser);
+    return Response.ok(_usersList);
   }
+
+  @Operation.get('userId')
+  Future<Response> getOne()async{
+    UserSerializer users = UserSerializer();
+    Map<String, dynamic> _user = await users.findByIdentifier('1234567');
+    return Response.ok(_user);
+  }
+
+  @Operation.post()
+  Future<Response> createUser(@Bind.body() UserSerializer userSerializer)async{
+    return Response.ok(await userSerializer.save());
+  }
+
+
 }

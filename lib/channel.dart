@@ -14,6 +14,7 @@ class EPayGatewayChannel extends ApplicationChannel {
   /// and any other initialization required before constructing [entryPoint].
   ///
   /// This method is invoked prior to [entryPoint] being accessed.
+  
   @override
   Future prepare() async {
     logger.onRecord.listen((rec) => print("$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}"));
@@ -31,17 +32,11 @@ class EPayGatewayChannel extends ApplicationChannel {
 
     // Prefer to use `link` instead of `linkFunction`.
     // See: https://aqueduct.io/docs/http/request_controller/
-    router
-      .route("/reqister_company")
-    .link(() => RegisterCompanyController());
-
-    // router
-    //   .route("/")
-    // .link(() => RegisterUserController());
 
     router
-      .route("/create_account")
-    .link(() => RegisterUserController());
+      .route("users/[:userId]")
+    .link(() => UsersController());
+
 
     return router;
   }
