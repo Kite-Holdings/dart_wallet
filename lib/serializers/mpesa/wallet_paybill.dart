@@ -1,6 +1,7 @@
 import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:e_pay_gateway/serializers/mpesa/rates.dart';
 import 'package:e_pay_gateway/settings/settings.dart';
+import 'package:e_pay_gateway/third_party_operations/mpesa/b_b_paybill.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class WalletToPaybill extends Serializable{
@@ -42,7 +43,8 @@ class WalletToPaybill extends Serializable{
       update: {"\$dec":{'wallet_account_no':transactionAmount()}},
     );
 
-    // TODO: Perform B2B
+    // TODO: Perform B2B check if success
+    await payBill(tillNo: business_no, amount: amount.toString(), accRef: account_no);
     
 
     await db.close();

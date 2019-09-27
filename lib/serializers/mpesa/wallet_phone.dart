@@ -1,6 +1,7 @@
 import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:e_pay_gateway/serializers/mpesa/rates.dart';
 import 'package:e_pay_gateway/settings/settings.dart';
+import 'package:e_pay_gateway/third_party_operations/mpesa/b_c_phone_no.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class WalletToPhoneNo extends Serializable{
@@ -40,6 +41,7 @@ class WalletToPhoneNo extends Serializable{
     );
 
     // TODO: Perform B2C
+    await bPhoneNo(phoneNo: phone_no, amount: amount.toString());
     
 
     await db.close();

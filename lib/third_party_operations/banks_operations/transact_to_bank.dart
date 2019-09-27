@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:e_pay_gateway/settings/settings.dart';
-import 'package:e_pay_gateway/third_part_operations/banks_operations/fetch_token.dart';
+import 'package:e_pay_gateway/third_party_operations/banks_operations/fetch_token.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 
