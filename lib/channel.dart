@@ -1,5 +1,6 @@
 import 'package:e_pay_gateway/controllers/company/company_controller.dart';
 import 'package:e_pay_gateway/controllers/users/users_accounts_controller.dart';
+import 'package:e_pay_gateway/third_part_operations/banks_operations/transact_to_bank.dart';
 
 import 'e_pay_gateway.dart';
 
@@ -36,6 +37,12 @@ class EPayGatewayChannel extends ApplicationChannel {
     router
       .route("users/[:userId]")
     .link(() => UsersController());
+    router
+      .route("/")
+    .linkFunction((request)async{
+      // return pesaLinkTransact();
+      return Response.ok({"Hi": "Hi"});
+    });
 
 
     return router;
