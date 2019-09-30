@@ -48,18 +48,19 @@ class EPayGatewayChannel extends ApplicationChannel {
       return Response.ok({"Hi": "Hi"});
     });
 
+
     // Mpesa
     router
-      .route('/third_parties/mpesa/paybills')
+      .route('/thirdParties/mpesa/paybill')
       .link(() => PaybillController());
     router
-      .route('/third_parties/mpesa/buygoodsServices')
+      .route('/thirdParties/mpesa/buygoodsServices')
       .link(() => BuyGoodsServicesController());
     router
-      .route('/third_parties/mpesa/transfertoPhone')
+      .route('/thirdParties/mpesa/transfertoPhone')
       .link(() => TransferPhoneController());
     router
-      .route('/third_parties/mpesa/depositRequest')
+      .route("/thirdParties/mpesa/depositRequest")
       .link(() => DepositRequestController());
 
     return router;

@@ -8,9 +8,10 @@ Future<String> fetchMpesaToken()async{
   String password = consumerSecret;
   String basicAuth = 'Basic ' + base64Encode(utf8.encode('$username:$password'));
 
-  http.Response r = await http.get('https://api.somewhere.io',headers: <String, String>{'authorization': basicAuth});
+  http.Response r = await http.get(getTokenURL,headers: <String, String>{'authorization': basicAuth});
 
   var body = json.decode(r.body);
 
   return body['access_token'].toString();
+
 }

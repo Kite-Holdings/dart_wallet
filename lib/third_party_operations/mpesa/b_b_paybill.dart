@@ -12,7 +12,7 @@ Future payBill({String tillNo, String amount, String accRef})async{
     "CommandID": "MerchantToMerchantTransfer",
     "SenderIdentifierType": "4",
     "RecieverIdentifierType": "4",
-    "Amount": amount,
+    "Amount": double.parse(amount),
     "PartyA": businessShortCode,
     "PartyB": tillNo,
     "Remarks": "test",
@@ -29,7 +29,7 @@ Future payBill({String tillNo, String amount, String accRef})async{
   final String url = b2bURL;
 
 
-  final http.Response r = await http.post(url, headers: headers, body: payload);
+  final http.Response r = await http.post(url, headers: headers, body: json.encode(payload));
 
   return json.decode(r.body);
 }

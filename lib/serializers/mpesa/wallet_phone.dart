@@ -5,22 +5,22 @@ import 'package:e_pay_gateway/third_party_operations/mpesa/b_c_phone_no.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class WalletToPhoneNo extends Serializable{
-  String sender_account;
-  String phone_no;
+  String senderAccount;
+  String phoneNo;
   double amount;
   @override
   Map<String, dynamic> asMap() {
     return {
-      "sender_acount": sender_account,
-      "phone_no": phone_no,
+      "senderAcount": senderAccount,
+      "phoneNo": phoneNo,
       "amount": amount
     };
   }
 
   @override
   void readFromMap(Map<String, dynamic> object) {
-    sender_account = object['sender_account'].toString();
-    phone_no = object['phone_no'].toString();
+    senderAccount = object['senderAccount'].toString();
+    phoneNo = object['phoneNo'].toString();
     amount = double.parse(object['amount'].toString());
   }
   Future<Map<String, dynamic>> performTransaction()async{
@@ -28,7 +28,7 @@ class WalletToPhoneNo extends Serializable{
       return amount + mpesaToPhoneRate() + amount *thirdPatyRate;
     }
 
-    final Db db =  Db(databaseUrl);
+    /*final Db db =  Db(databaseUrl);
 
     await db.open();
     final DbCollection wallets = db.collection('wallets');
@@ -36,19 +36,16 @@ class WalletToPhoneNo extends Serializable{
     // TODO: Verify if sender wallet got enough cash
     // If so subract amount from acc
     await wallets.findAndModify(
-      query: where.eq("wallet_account_no", sender_account),
+      query: where.eq("wallet_account_no", senderAccount),
       update: {"\$dec":{'wallet_account_no':transactionAmount()}},
     );
-
+*/
     // TODO: Perform B2C
-    await bPhoneNo(phoneNo: phone_no, amount: amount.toString());
+    Map response = await bPhoneNo(phoneNo: phoneNo, amount: amount.toString());
     
 
-    await db.close();
-    return{
-      "statusCode": 0,
-      "message": "success"
-    };
+    // await db.close();
+    return response;
   }
 
 }

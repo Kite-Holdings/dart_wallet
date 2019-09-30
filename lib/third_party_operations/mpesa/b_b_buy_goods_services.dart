@@ -12,7 +12,7 @@ Future buyGoodsServices({String tillNo, String amount})async{
     "CommandID": "MerchantToMerchantTransfer",
     "SenderIdentifierType": "4",
     "RecieverIdentifierType": "4",
-    "Amount": amount,
+    "Amount": double.parse(amount),
     "PartyA": businessShortCode,
     "PartyB": tillNo,
     "Remarks": "test",
@@ -28,7 +28,7 @@ Future buyGoodsServices({String tillNo, String amount})async{
   final String url = b2bURL;
 
 
-  final http.Response r = await http.post(url, headers: headers, body: payload);
+  final http.Response r = await http.post(url, headers: headers, body: json.encode(payload));
 
   return json.decode(r.body);
 }

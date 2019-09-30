@@ -5,12 +5,13 @@ import 'package:e_pay_gateway/third_party_operations/mpesa/settings.dart';
 
 class WalletDepositRequestSerializer extends Serializable{
   String phoneNo;
+  String walletAccountNo;
   double amount;
   @override
   Map<String, dynamic> asMap() {
-    // TODO: implement asMap
     return {
       "phoneNo": phoneNo,
+      "walletAccountNo": walletAccountNo,
       "amount": amount
     };
   }
@@ -18,15 +19,13 @@ class WalletDepositRequestSerializer extends Serializable{
   @override
   void readFromMap(Map<String, dynamic> object) {
     phoneNo = object['phoneNo'].toString();
+    walletAccountNo = object['walletAccountNo'].toString();
     amount = double.parse(object['amount'].toString());
   }
   Future<Map<String, dynamic>> sendRequest()async{
-    await depositRequest(phoneNo: phoneNo.toString(), amount: amount.toString(), accRef: businessShortCode);
+    Map response = await depositRequest(phoneNo: phoneNo.toString(), amount: amount.toString(), accRef: walletAccountNo);
 
-    return{
-      "statusCode": 0,
-      "message": "success"
-    };
+    return response;
   }
   
 }

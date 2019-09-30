@@ -5,22 +5,22 @@ import 'package:e_pay_gateway/third_party_operations/mpesa/b_b_buy_goods_service
 import 'package:mongo_dart/mongo_dart.dart';
 
 class WalletToBuyGoodsServices extends Serializable{
-  String sender_account;
-  String business_no;
+  String senderAccount;
+  String businessNo;
   double amount;
   @override
   Map<String, dynamic> asMap() {
     return {
-      "sender_acount": sender_account,
-      "business_no": business_no,
+      "senderAcount": senderAccount,
+      "businessNo": businessNo,
       "amount": amount
     };
   }
 
   @override
   void readFromMap(Map<String, dynamic> object) {
-    sender_account = object['sender_account'].toString();
-    business_no = object['business_no'].toString();
+    senderAccount = object['senderAccount'].toString();
+    businessNo = object['businessNo'].toString();
     amount = double.parse(object['amount'].toString());
   }
   Future<Map<String, dynamic>> performTransaction()async{
@@ -28,7 +28,7 @@ class WalletToBuyGoodsServices extends Serializable{
       return amount + mpesaToBuyGoodsServicesRate() + amount *thirdPatyRate;
     }
 
-    final Db db =  Db(databaseUrl);
+    /* final Db db =  Db(databaseUrl);
 
     await db.open();
     final DbCollection wallets = db.collection('wallets');
@@ -36,19 +36,17 @@ class WalletToBuyGoodsServices extends Serializable{
     // TODO: Verify if sender wallet got enough cash
     // If so subract amount from acc
     await wallets.findAndModify(
-      query: where.eq("wallet_account_no", sender_account),
+      query: where.eq("wallet_account_no", senderAccount),
       update: {"\$dec":{'wallet_account_no':transactionAmount()}},
     );
+*/
 
     // TODO: Perform B2B check if success
-    await buyGoodsServices(tillNo: business_no, amount: amount.toString());
+    Map response = await buyGoodsServices(tillNo: businessNo, amount: amount.toString());
     
 
-    await db.close();
-    return{
-      "statusCode": 0,
-      "message": "success"
-    };
+    // await db.close();
+    return response;
   }
 
 }
