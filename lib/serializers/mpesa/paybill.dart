@@ -1,10 +1,7 @@
 import 'package:e_pay_gateway/e_pay_gateway.dart';
-import 'package:e_pay_gateway/serializers/mpesa/rates.dart';
-import 'package:e_pay_gateway/settings/settings.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/b_b_paybill.dart';
-import 'package:mongo_dart/mongo_dart.dart';
 
-class WalletToPaybill extends Serializable{
+class MpesaPaybill extends Serializable{
   String senderAccount;
   String businessNo;
   String accountNo;
@@ -26,11 +23,11 @@ class WalletToPaybill extends Serializable{
     accountNo = object['accountNo'].toString();
     amount = double.parse(object['amount'].toString());
   }
-  Future<Map<String, dynamic>> performTransaction()async{
-    double transactionAmount (){
+  Future performTransaction()async{
+  /*  double transactionAmount (){
       return amount + mpesaToPaybillRate() + amount *thirdPatyRate;
     }
-/*
+
     final Db db =  Db(databaseUrl);
 
     await db.open();
@@ -44,7 +41,7 @@ class WalletToPaybill extends Serializable{
     );
 */
     // TODO: Perform B2B check if success
-    Map response = await payBill(tillNo: businessNo, amount: amount.toString(), accRef: accountNo);
+    final response = await payBill(tillNo: businessNo, amount: amount.toString(), accRef: accountNo);
     
 
     // await db.close();

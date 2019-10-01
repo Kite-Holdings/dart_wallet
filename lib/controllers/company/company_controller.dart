@@ -10,17 +10,17 @@ class RegisterCompanyController extends Controller {
   String stringifyCount(int count){
     String c = count.toString();
     for(int i = c.length; i< 3; i++){
-      c = '0' + c;
+      c = '0$c';
     }
     return c;
   }
 
   @override
   FutureOr<RequestOrResponse> handle(Request request) async{
-    Db db = new Db("mongodb://localhost:27017/wallet");
-    int c = await companyCounter ('company_counter');
-    String _code = stringifyCount(c);
-    String _name = 'Kite Holdings';
+    final Db db =  Db("mongodb://localhost:27017/wallet");
+    final int c = await companyCounter ('company_counter');
+    final String _code = stringifyCount(c);
+    const String _name = 'Kite Holdings';
 
     await db.open();
     final DbCollection company = db.collection('company');

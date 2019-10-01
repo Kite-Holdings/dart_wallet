@@ -8,16 +8,16 @@ class UsersController extends ResourceController{
 
   @Operation.get()
   Future<Response> getAll()async{
-    UserSerializer users = UserSerializer();
-    List<Map<String, dynamic>> _usersList = await users.getAll();
+    final UserSerializer users = UserSerializer();
+    final List<Map<String, dynamic>> _usersList = await users.getAll();
 
     return Response.ok(_usersList);
   }
 
   @Operation.get('userId')
   Future<Response> getOne()async{
-    UserSerializer users = UserSerializer();
-    Map<String, dynamic> _user = await users.findByIdentifier('1234567');
+    final UserSerializer users = UserSerializer();
+    final Map<String, dynamic> _user = await users.findByIdentifier('1234567');
     return Response.ok(_user);
   }
 

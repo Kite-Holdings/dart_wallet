@@ -1,10 +1,8 @@
-import 'package:e_pay_gateway/controllers/company/company_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/buy_goods_servisesController.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/deposit_request_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/paybill_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/transfer_to_phone_controller.dart';
 import 'package:e_pay_gateway/controllers/users/users_accounts_controller.dart';
-import 'package:e_pay_gateway/third_party_operations/banks_operations/transact_to_bank.dart';
 
 import 'e_pay_gateway.dart';
 

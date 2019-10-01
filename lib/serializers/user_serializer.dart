@@ -5,9 +5,9 @@ import 'package:mongo_dart/mongo_dart.dart';
 
 class UserSerializer extends Serializable{
   String identifier;
-  String identifier_type;
+  String identifierType;
   String username;
-  String phone_no;
+  String phoneNo;
   String email;
   String password;
 
@@ -18,9 +18,9 @@ class UserSerializer extends Serializable{
   Map<String, dynamic> asMap() {
     return {
       "identifier": identifier,
-      "identifier_type": identifier_type,
+      "identifierType": identifierType,
       "username": username,
-      "phone_no": phone_no,
+      "phoneNo": phoneNo,
       "email": email,
       "password": password,
     };
@@ -29,9 +29,9 @@ class UserSerializer extends Serializable{
   @override
   void readFromMap(Map<String, dynamic> object) {
     identifier = object['identifier'].toString();
-    identifier_type = object['identifier_type'].toString();
+    identifierType = object['identifierType'].toString();
     username = object['username'].toString();
-    phone_no = object['phone_no'].toString();
+    phoneNo = object['phoneNo'].toString();
     email = object['email'].toString();
     password = object['password'].toString();
   }
@@ -44,22 +44,22 @@ class UserSerializer extends Serializable{
     try{
       await users.insert({
         'identifier': identifier,
-        'identifier_type': identifier_type,
+        'identifierType': identifierType,
         'username': username,
         'address': {
-          'phone_no': phone_no,
+          'phoneNo': phoneNo,
           'email': email,
         },
         'wallets': [],
       });
-      Map<String, dynamic> user = await users.findOne(where.eq('identifier', identifier));
-      var _id = user['_id'];
-      String user_ref = databaseName + '/users/' + _id.toString();
-      WalletSerializer walletSerializer = WalletSerializer();
-      Map<String, dynamic> new_wallet = await walletSerializer.save(user_ref);
-      String wallet_ref = new_wallet['ref'].toString();
+      final Map<String, dynamic> user = await users.findOne(where.eq('identifier', identifier));
+      final _id = user['_id'];
+      final String userRef = '$databaseName + /users/ + ${_id.toString()}';
+      final WalletSerializer walletSerializer = WalletSerializer();
+      final Map<String, dynamic> newWallet = await walletSerializer.save(userRef);
+      final String walletRef = newWallet['ref'].toString();
 
-      await users.update(where.eq('_id', user['_id']), modify.push('wallets', wallet_ref));
+      await users.update(where.eq('_id', user['_id']), modify.push('wallets', walletRef));
       
       await db.close();
 
@@ -68,12 +68,12 @@ class UserSerializer extends Serializable{
         'identifier': identifier,
         'username': username,
         'address': {
-          'phone_no': phone_no,
+          'phoneNo': phoneNo,
           'email': email,
         },
         'wallet': {
-          'balance': new_wallet['balance'],
-          'wallet_account_no': new_wallet['wallet_account_no']
+          'balance': newWallet['balance'],
+          'wallet_account_no': newWallet['wallet_account_no']
         },
       };
 
@@ -89,14 +89,13 @@ class UserSerializer extends Serializable{
 
   Future<List<Map<String, dynamic>>> getAll()async{
     await db.open();
-    List<Map<String, dynamic>> _usersList = [];
+    final List<Map<String, dynamic>> _usersList = [];
     final DbCollection users = db.collection('users');
-    Stream<Map<String, dynamic>> _usersStream = users.find();
+    final Stream<Map<String, dynamic>> _usersStream = users.find();
 
     
-    await _usersStream.forEach((item){
-      _usersList.add(item);
-    });
+    await _usersStream.forEach(_usersList.add);
+    
     await db.close();
     return _usersList;
   }
@@ -104,7 +103,7 @@ class UserSerializer extends Serializable{
   Future<Map<String, dynamic>> findByIdentifier(String userId)async{
     await db.open();
     final DbCollection users = db.collection('users');
-    Map<String, dynamic> user = await users.findOne(where.eq('identifier', userId));
+    final Map<String, dynamic> user = await users.findOne(where.eq('identifier', userId));
 
     await db.close();
     return user;
