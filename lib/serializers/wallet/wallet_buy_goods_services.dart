@@ -1,52 +1,42 @@
-// import 'package:e_pay_gateway/e_pay_gateway.dart';
-// import 'package:e_pay_gateway/serializers/mpesa/rates.dart';
-// import 'package:e_pay_gateway/settings/settings.dart';
-// import 'package:e_pay_gateway/third_party_operations/mpesa/b_b_buy_goods_services.dart';
-// import 'package:mongo_dart/mongo_dart.dart';
+import 'package:e_pay_gateway/e_pay_gateway.dart';
+import 'package:e_pay_gateway/serializers/mpesa/rates.dart';
+import 'package:e_pay_gateway/serializers/wallet_serializer.dart';
+import 'package:e_pay_gateway/settings/settings.dart';
+import 'package:e_pay_gateway/third_party_operations/mpesa/b_b_buy_goods_services.dart';
 
-// class WalletToBuyGoodsServices extends Serializable{
-//   String senderAccount;
-//   String businessNo;
-//   double amount;
-//   @override
-//   Map<String, dynamic> asMap() {
-//     return {
-//       "senderAcount": senderAccount,
-//       "businessNo": businessNo,
-//       "amount": amount
-//     };
-//   }
+class WalletToBuyGoodsServices extends Serializable{
+  String senderAccount;
+  String businessNo;
+  double amount;
+  @override
+  Map<String, dynamic> asMap() {
+    return {
+      "senderAcount": senderAccount,
+      "businessNo": businessNo,
+      "amount": amount
+    };
+  }
 
-//   @override
-//   void readFromMap(Map<String, dynamic> object) {
-//     senderAccount = object['senderAccount'].toString();
-//     businessNo = object['businessNo'].toString();
-//     amount = double.parse(object['amount'].toString());
-//   }
-//   Future performTransaction()async{
-//     double transactionAmount (){
-//       return amount + mpesaToBuyGoodsServicesRate() + amount *thirdPatyRate;
-//     }
+  @override
+  void readFromMap(Map<String, dynamic> object) {
+    senderAccount = object['senderAccount'].toString();
+    businessNo = object['businessNo'].toString();
+    amount = double.parse(object['amount'].toString());
+  }
+  Future performTransaction()async{
+    double transactionAmount (){
+      return amount + mpesaToBuyGoodsServicesRate() + amount *thirdPatyRate;
+    }
 
-//     final Db db =  Db(databaseUrl);
+    final WalletSerializer wallet = WalletSerializer();
 
-//     await db.open();
-//     final DbCollection wallets = db.collection('wallets');
+    // credit sender
+    await wallet.credit(accountNo: senderAccount, amount: transactionAmount());
 
-//     // TODO: Verify if sender wallet got enough cash
-//     // If so subract amount from acc
-//     await wallets.findAndModify(
-//       query: where.eq("wallet_account_no", senderAccount),
-//       update: {"\$dec":{'wallet_account_no':transactionAmount()}},
-//     );
-
-
-//     // TODO: Perform B2B check if success
-//     var response = await buyGoodsServices(tillNo: businessNo, amount: amount.toString());
+    // TODO: Perform B2B check if success
+    var response = await buyGoodsServices(tillNo: businessNo, amount: amount.toString());
     
+    return response;
+  }
 
-//     // await db.close();
-//     return response;
-//   }
-
-// }
+}

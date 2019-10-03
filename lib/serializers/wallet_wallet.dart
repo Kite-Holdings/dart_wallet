@@ -1,25 +1,25 @@
 import 'package:e_pay_gateway/e_pay_gateway.dart';
+import 'package:e_pay_gateway/serializers/wallet_serializer.dart';
 import 'package:e_pay_gateway/settings/settings.dart';
-import 'package:mongo_dart/mongo_dart.dart';
 
 class WalletToWallet extends Serializable{
-  String sender_account;
-  String recipient_account;
+  String senderAccount;
+  String recipientAccount;
   double amount;
   @override
   Map<String, dynamic> asMap() {
     
     return {
-      "sender_account": sender_account,
-      "recipient_account": recipient_account,
+      "senderAccount": senderAccount,
+      "recipientAccount": recipientAccount,
       "": amount
     };
   }
 
   @override
   void readFromMap(Map<String, dynamic> object) {
-    sender_account = object['sender_account'].toString();
-    recipient_account = object['recipient_account'].toString();
+    senderAccount = object['senderAccount'].toString();
+    recipientAccount = object['recipientAccount'].toString();
     amount = double.parse(object['amount'].toString());
   }
 
@@ -27,25 +27,14 @@ class WalletToWallet extends Serializable{
     double transactionAmount (){
       return amount + amount * walletRate;
     }
-    final Db db =  Db(databaseUrl);
 
-    await db.open();
-    final DbCollection wallets = db.collection('wallets');
+    final WalletSerializer wallet = WalletSerializer();
 
-    // TODO: Verify if sender wallet got enough cash
-    // If so subract amount from acc
-    await wallets.findAndModify(
-      query: where.eq("wallet_account_no", sender_account),
-      update: {"\$dec":{'wallet_account_no':transactionAmount()}},
-    );
+    // credit sender
+    await wallet.credit(accountNo: senderAccount, amount: transactionAmount());
+    // debit recipient
+    await wallet.debit(accountNo: recipientAccount, amount: amount);
 
-    // Then increment recipent acc
-    await wallets.findAndModify(
-      query: where.eq("wallet_account_no", sender_account),
-      update: {"\$inc":{'wallet_account_no':amount}},
-    );
-
-    await db.close();
     return{
       "statusCode": 0,
       "message": "success"
