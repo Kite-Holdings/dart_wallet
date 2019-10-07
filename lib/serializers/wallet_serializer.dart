@@ -5,7 +5,7 @@ import 'package:e_pay_gateway/settings/settings.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class WalletSerializer extends Serializable{
-  String user_ref;
+  String account_ref;
   double balance;
   String wallet_account_no;
 
@@ -16,7 +16,7 @@ class WalletSerializer extends Serializable{
   @override
   Map<String, dynamic> asMap() {
     return {
-      "user_ref": user_ref,
+      "account_ref": account_ref,
       "balance": balance,
       "wallet_account_no": wallet_account_no,
     };
@@ -24,27 +24,26 @@ class WalletSerializer extends Serializable{
 
   @override
   void readFromMap(Map<String, dynamic> object) {
-    user_ref = object['user_ref'].toString();
+    account_ref = object['account_ref'].toString();
     balance = double.parse(object['balance'].toString());
     wallet_account_no = object['wallet_account_no'].toString();
   }
 
 
   /// This functions create and saves a new Virtual Wallet
-  /// It takes two arguments, user refference and wallet account number
+  /// It takes three arguments, user refference company code and account type(0 for consumer, 1 for Merchant)
   /// It returns a details of the created virtual wallet
-  // TODO:  accept wallet no
-  Future<Map<String, dynamic>> save(String userRef)async{
+  Future<Map<String, dynamic>> save({String companyCode, String accountType,String accountRef})async{
     int c = await companyCounter ('wallet_account');
     wallet_account_no = stringifyCount(c);
     wallet_account_no = companyCode + wallet_account_no;
-    user_ref = userRef;
+    account_ref = accountRef;
     balance = 0;
     await db.open();
 
     await wallets.insert({
       'balance': balance,
-      'user_ref': user_ref,
+      'account_ref': account_ref,
       'wallet_account_no': wallet_account_no
     });
     Map<String, dynamic> wallet = await wallets.findOne(where.eq('wallet_account_no', wallet_account_no));

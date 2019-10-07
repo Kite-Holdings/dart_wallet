@@ -5,7 +5,7 @@ import 'package:e_pay_gateway/serializers/mpesa/buy_goods_services.dart';
 
 class BuyGoodsServicesController extends ResourceController{
   @Operation.post()
-  Future<Response> createUser(@Bind.body() MpesaBuyGoodsServices walletBuyGoodsServicesSerializer)async{
-    return Response.ok(await walletBuyGoodsServicesSerializer.performTransaction());
+  Future<Response> createUser(@Bind.body() MpesaBuyGoodsServices buyGoodsServicesSerializer)async{
+    return Response.ok(await buyGoodsServicesSerializer.performTransaction());
   }
 }

@@ -1,8 +1,13 @@
+import 'package:e_pay_gateway/controllers/accounts/consumer_account_controller.dart';
+import 'package:e_pay_gateway/controllers/accounts/merchant_account_controllewr.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/buy_goods_servisesController.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/deposit_request_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/paybill_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/transfer_to_phone_controller.dart';
-import 'package:e_pay_gateway/controllers/users/users_accounts_controller.dart';
+import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_buy_goods_services.dart';
+import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_paybill.dart';
+import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_phone_no.dart';
+import 'package:e_pay_gateway/controllers/wallet/wallet_wallet.dart';
 
 import 'e_pay_gateway.dart';
 
@@ -37,17 +42,25 @@ class EPayGatewayChannel extends ApplicationChannel {
     // See: https://aqueduct.io/docs/http/request_controller/
 
     router
-      .route("users/[:userId]")
-    .link(() => UsersController());
-    router
       .route("/")
     .linkFunction((request)async{
       // return pesaLinkTransact();
       return Response.ok({"Hi": "Hi"});
     });
 
+    // Accounts
+    // consumer
+    router
+      .route("accounts/consumer/[:accountId]")
+    .link(() => ConsumerAccountController());
+    // merchant
+    router
+      .route("accounts/merchant/[:accountId]")
+    .link(() => MerchantAccountController());
 
-    // Mpesa
+
+
+    // Mpesa only
     router
       .route('/thirdParties/mpesa/paybill')
       .link(() => PaybillController());
@@ -60,6 +73,23 @@ class EPayGatewayChannel extends ApplicationChannel {
     router
       .route("/thirdParties/mpesa/depositRequest")
       .link(() => DepositRequestController());
+
+
+    
+    // Wallet 
+    router
+      .route('/wallet/thirdParties/mpesa/paybill')
+      .link(() => WalletMpesaPaybillController());
+    router
+      .route('/wallet/thirdParties/mpesa/buygoodsServices')
+      .link(() => WalletMpesaBuyGoodsServicesController());
+    router
+      .route('/wallet/thirdParties/mpesa/transfertoPhone')
+      .link(() => WalletMpesaPhoneNoController());
+    router
+      .route("/wallet/wallet/transfer")
+      .link(() => WalletWalletController());
+
 
     return router;
   }
