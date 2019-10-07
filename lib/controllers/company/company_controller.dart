@@ -13,7 +13,7 @@ class CompaniesController extends ResourceController{
   @Operation.get('companyId')
   Future<Response> getOne(@Bind.path("companyId") String companyId)async{
     final CompanySerializer companies = CompanySerializer();
-    final Map<String, dynamic> _company = await companies.findById(companyId);
+    final Map<String, dynamic> _company = await companies.findByCode(companyId);
     return Response.ok(_company);
   }
 

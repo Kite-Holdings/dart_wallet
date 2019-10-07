@@ -3,7 +3,7 @@ import 'package:e_pay_gateway/serializers/wallet_wallet.dart';
 
 class WalletWalletController extends ResourceController{
   @Operation.post()
-  Future<Response> createUser(@Bind.body() WalletToWallet walletWalletSerializer)async{
+  Future<Response> transact(@Bind.body() WalletToWallet walletWalletSerializer)async{
     return Response.ok(await walletWalletSerializer.performTransaction());
   }
 }

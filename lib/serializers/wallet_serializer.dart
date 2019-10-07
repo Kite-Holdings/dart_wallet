@@ -66,7 +66,7 @@ class WalletSerializer extends Serializable{
     // If so subract amount from acc
     final Map<String, dynamic> _info =await wallets.findAndModify(
       query: where.eq("walletAccountNo", accountNo),
-      update: {"\$dec":{'balance': amount}},
+      update: {"\$inc":{'balance': -amount}},
       returnNew: true
     );
     await db.close();
