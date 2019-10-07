@@ -12,7 +12,7 @@ class WalletToWallet extends Serializable{
     return {
       "senderAccount": senderAccount,
       "recipientAccount": recipientAccount,
-      "": amount
+      "amount": amount
     };
   }
 

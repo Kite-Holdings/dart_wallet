@@ -1,5 +1,6 @@
 import 'package:e_pay_gateway/controllers/accounts/consumer_account_controller.dart';
 import 'package:e_pay_gateway/controllers/accounts/merchant_account_controllewr.dart';
+import 'package:e_pay_gateway/controllers/company/company_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/buy_goods_servisesController.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/deposit_request_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/paybill_controller.dart';
@@ -57,6 +58,12 @@ class EPayGatewayChannel extends ApplicationChannel {
     router
       .route("accounts/merchant/[:accountId]")
     .link(() => MerchantAccountController());
+    
+    
+    // Company
+    router
+      .route("companies/[:accountId]")
+    .link(() => CompaniesController());
 
 
 

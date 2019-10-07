@@ -5,9 +5,9 @@ import 'package:e_pay_gateway/settings/settings.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class WalletSerializer extends Serializable{
-  String account_ref;
+  String accountRef;
   double balance;
-  String wallet_account_no;
+  String walletAccountNo;
 
 
   static Db db =  Db(databaseUrl);
@@ -16,37 +16,37 @@ class WalletSerializer extends Serializable{
   @override
   Map<String, dynamic> asMap() {
     return {
-      "account_ref": account_ref,
+      "accountRef": accountRef,
       "balance": balance,
-      "wallet_account_no": wallet_account_no,
+      "walletAccountNo": walletAccountNo,
     };
   }
 
   @override
   void readFromMap(Map<String, dynamic> object) {
-    account_ref = object['account_ref'].toString();
+    accountRef = object['accountRef'].toString();
     balance = double.parse(object['balance'].toString());
-    wallet_account_no = object['wallet_account_no'].toString();
+    walletAccountNo = object['walletAccountNo'].toString();
   }
 
 
   /// This functions create and saves a new Virtual Wallet
   /// It takes three arguments, user refference company code and account type(0 for consumer, 1 for Merchant)
   /// It returns a details of the created virtual wallet
-  Future<Map<String, dynamic>> save({String companyCode, String accountType,String accountRef})async{
+  Future<Map<String, dynamic>> save({String companyCode, String accountType,String accountRefference})async{
     int c = await companyCounter ('wallet_account');
-    wallet_account_no = stringifyCount(c);
-    wallet_account_no = companyCode + wallet_account_no;
-    account_ref = accountRef;
+    walletAccountNo = stringifyCount(c);
+    walletAccountNo = companyCode + accountType + walletAccountNo;
+    accountRef = accountRefference;
     balance = 0;
     await db.open();
 
     await wallets.insert({
       'balance': balance,
-      'account_ref': account_ref,
-      'wallet_account_no': wallet_account_no
+      'accountRef': accountRef,
+      'walletAccountNo': walletAccountNo
     });
-    Map<String, dynamic> wallet = await wallets.findOne(where.eq('wallet_account_no', wallet_account_no));
+    Map<String, dynamic> wallet = await wallets.findOne(where.eq('walletAccountNo', walletAccountNo));
     await db.close();
     String wallet_ref = databaseName + '/wallets/' + wallet['_id'].toString() ;
     wallet['ref'] = wallet_ref;
@@ -56,7 +56,7 @@ class WalletSerializer extends Serializable{
   // TODO: create a fuction to check if wallet exist
 
   /// This function decrements wallet ballance by some amount
-  /// It takes two arguments, the wallet account number(wallet_account_no) and amount (amount)
+  /// It takes two arguments, the wallet account number(walletAccountNo) and amount (amount)
   /// It returns a Map of status with balance
   /// If the transaction failed the status is "failed", else "success"
   Future<Map<String, dynamic>> credit({String accountNo, double amount})async{
@@ -65,7 +65,7 @@ class WalletSerializer extends Serializable{
     // TODO: Verify if sender wallet got enough cash
     // If so subract amount from acc
     final Map<String, dynamic> _info =await wallets.findAndModify(
-      query: where.eq("wallet_account_no", accountNo),
+      query: where.eq("walletAccountNo", accountNo),
       update: {"\$dec":{'balance': amount}},
       returnNew: true
     );
@@ -81,7 +81,7 @@ class WalletSerializer extends Serializable{
 
 
   /// This function increments wallet ballance by some amount
-  /// It takes two arguments, the wallet account number(wallet_account_no) and amount (amount)
+  /// It takes two arguments, the wallet account number(walletAccountNo) and amount (amount)
   /// It returns a Map of status with balance
   /// If the transaction failed the status is "failed", else "success"
   Future<Map<String, dynamic>> debit({String accountNo, double amount})async{
@@ -91,7 +91,7 @@ class WalletSerializer extends Serializable{
     // TODO: Verify if sender wallet got enough cash
     // If so subract amount from acc
     final Map<String, dynamic> _info =await wallets.findAndModify(
-      query: where.eq("wallet_account_no", accountNo),
+      query: where.eq("walletAccountNo", accountNo),
       update: {"\$inc":{'balance':amount}},
       returnNew: true
     );

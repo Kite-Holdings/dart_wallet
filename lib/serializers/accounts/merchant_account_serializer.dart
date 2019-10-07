@@ -55,7 +55,7 @@ class MerchantAccountSerializer extends Serializable{
       final _id = account['_id'];
       final String accountRef = '$databaseName + /accounts/ + ${_id.toString()}';
       final WalletSerializer walletSerializer = WalletSerializer();
-      final Map<String, dynamic> newWallet = await walletSerializer.save(accountRef: accountRef, accountType: '0', companyCode: '001');
+      final Map<String, dynamic> newWallet = await walletSerializer.save(accountRefference: accountRef, accountType: '1', companyCode: '001');
       final String walletRef = newWallet['ref'].toString();
 
       await accounts.update(where.eq('_id', account['_id']), modify.push('wallets', walletRef));
@@ -73,7 +73,7 @@ class MerchantAccountSerializer extends Serializable{
         },
         'wallet': {
           'balance': newWallet['balance'],
-          'wallet_account_no': newWallet['wallet_account_no']
+          'walletAccountNo': newWallet['walletAccountNo']
         },
       };
 

@@ -1,34 +1,26 @@
-import 'package:e_pay_gateway/controllers/utils/counter_intrement.dart';
 import 'package:e_pay_gateway/e_pay_gateway.dart';
-import 'package:aqueduct/aqueduct.dart';
-import 'package:mongo_dart/mongo_dart.dart';
+import 'package:e_pay_gateway/serializers/company/company_serializer.dart';
 
+class CompaniesController extends ResourceController{
+  @Operation.get()
+  Future<Response> getAll()async{
+    final CompanySerializer companies = CompanySerializer();
+    final List<Map<String, dynamic>> _companiesList = await companies.getAll();
 
-
-
-class RegisterCompanyController extends Controller {
-  String stringifyCount(int count){
-    String c = count.toString();
-    for(int i = c.length; i< 3; i++){
-      c = '0$c';
-    }
-    return c;
+    return Response.ok(_companiesList);
   }
 
-  @override
-  FutureOr<RequestOrResponse> handle(Request request) async{
-    final Db db =  Db("mongodb://localhost:27017/wallet");
-    final int c = await companyCounter ('company_counter');
-    final String _code = stringifyCount(c);
-    const String _name = 'Kite Holdings';
-
-    await db.open();
-    final DbCollection company = db.collection('company');
-    await company.insert({
-      'Name': _name,
-      'code': _code,
-    });
-    await db.close();
-    return Response.ok({'state': 'Success', 'code': '0'});
+  @Operation.get('companyId')
+  Future<Response> getOne(@Bind.path("companyId") String companyId)async{
+    final CompanySerializer companies = CompanySerializer();
+    final Map<String, dynamic> _company = await companies.findById(companyId);
+    return Response.ok(_company);
   }
+
+  @Operation.post()
+  Future<Response> createUser(@Bind.body() CompanySerializer companySerializer)async{
+    return Response.ok(await companySerializer.save());
+  }
+
+
 }
