@@ -4,11 +4,12 @@ version: 0.0.1
 author: stable|kernel <jobs@stablekernel.com>
 
 environment:
-  sdk: ">=2.0.0 <3.0.0"
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   aqueduct: ^3.0.0
   mongo_dart: ^0.3.6
+  random_string: ^1.1.0
   http: ^0.12.0+2
   xml: ^3.5.0
 

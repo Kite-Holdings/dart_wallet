@@ -52,17 +52,17 @@ class EPayGatewayChannel extends ApplicationChannel {
     // Accounts
     // consumer
     router
-      .route("accounts/consumer/[:accountId]")
+      .route("accounts/consumer/:accountId")
     .link(() => ConsumerAccountController());
     // merchant
     router
-      .route("accounts/merchant/[:accountId]")
+      .route("accounts/merchant/:accountId")
     .link(() => MerchantAccountController());
     
     
     // Company
     router
-      .route("companies/[:accountId]")
+      .route("/companies/[:accountId]")
     .link(() => CompaniesController());
 
 

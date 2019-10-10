@@ -1,25 +1,47 @@
 import 'package:e_pay_gateway/e_pay_gateway.dart';
+import 'package:e_pay_gateway/models.dart/company_model.dart';
 import 'package:e_pay_gateway/serializers/company/company_serializer.dart';
 
 class CompaniesController extends ResourceController{
   @Operation.get()
   Future<Response> getAll()async{
-    final CompanySerializer companies = CompanySerializer();
-    final List<Map<String, dynamic>> _companiesList = await companies.getAll();
+    final CompanyModel companies = CompanyModel();
+    final Map<String, dynamic> _res = await companies.getAll();
 
-    return Response.ok(_companiesList);
+    if (_res['status'] == '0'){
+      return Response.ok(_res['data']);
+    }
+    else {
+      return Response.serverError();
+    }
+
+    
   }
 
   @Operation.get('companyId')
   Future<Response> getOne(@Bind.path("companyId") String companyId)async{
-    final CompanySerializer companies = CompanySerializer();
-    final Map<String, dynamic> _company = await companies.findByCode(companyId);
-    return Response.ok(_company);
+    final CompanyModel companies = CompanyModel();
+    final Map<String, dynamic> _res = await companies.findByCode(companyId);
+
+    if (_res['status'] == '0'){
+      return Response.ok(_res['data']);
+    }
+    else {
+      return Response.serverError();
+    }
   }
 
   @Operation.post()
-  Future<Response> createUser(@Bind.body() CompanySerializer companySerializer)async{
-    return Response.ok(await companySerializer.save());
+  Future<Response> createUser(@Bind.body() CompanySerializer _companySerializer)async{
+    final CompanyModel companyModel = CompanyModel(name: _companySerializer.name);
+
+    final Map<String, dynamic> _res = await companyModel.create();
+    if (_res['status'] == '0'){
+      return Response.ok(_res['data']);
+    }
+    else {
+      return Response.serverError();
+    }
   }
 
 

@@ -74,7 +74,8 @@ class WalletSerializer extends Serializable{
     // TODO: Check if succeeded
     return {
       "status": "success",
-      "balance": double.parse(_info['balance'].toString())
+      "balance": double.parse(_info['balance'].toString()),
+      "_id": _info['_id']
     };
   }
 
@@ -100,7 +101,8 @@ class WalletSerializer extends Serializable{
      // TODO: Check if succeeded
     return {
       "status": "success",
-      "balance": double.parse(_info['balance'].toString())
+      "balance": double.parse(_info['balance'].toString()),
+      "_id": _info['_id']
     };
   }
 
