@@ -1,6 +1,8 @@
 import 'package:e_pay_gateway/controllers/accounts/consumer_account_controller.dart';
 import 'package:e_pay_gateway/controllers/accounts/merchant_account_controllewr.dart';
+import 'package:e_pay_gateway/controllers/company/auth.dart';
 import 'package:e_pay_gateway/controllers/company/company_controller.dart';
+import 'package:e_pay_gateway/controllers/company/token_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/buy_goods_servisesController.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/deposit_request_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/paybill_controller.dart';
@@ -9,6 +11,7 @@ import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_buy_goods_services
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_paybill.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_phone_no.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_wallet.dart';
+import 'package:e_pay_gateway/models.dart/token_model.dart';
 
 import 'e_pay_gateway.dart';
 
@@ -46,7 +49,9 @@ class EPayGatewayChannel extends ApplicationChannel {
       .route("/")
     .linkFunction((request)async{
       // return pesaLinkTransact();
-      return Response.ok({"Hi": "Hi"});
+      final TokenModel tokenModel = TokenModel();
+      return Response.ok(await tokenModel.verifyToken("CDANv5SDFV2PYuFLFLXO"));
+      // return Response.ok(await tokenModel.getToken(owner: "wallets/companies/5d9f4c5396369ead33772e64"));
     });
 
     // Accounts
@@ -61,6 +66,13 @@ class EPayGatewayChannel extends ApplicationChannel {
     
     
     // Company
+    router
+      .route('/token')
+      .link(() => Authorizer.basic(PasswordVerifier()))
+      .link(() => TokenController());
+
+
+
     router
       .route("/companies/[:accountId]")
     .link(() => CompaniesController());
