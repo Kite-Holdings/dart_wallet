@@ -15,7 +15,6 @@ dt = "20190930143854";
   
   var bytes = utf8.encode(str);
   var _password = base64.encode(bytes);
-print(accRef);
 
   final Map<String, dynamic> payload = {
     "BusinessShortCode": businessShortCode,
@@ -26,7 +25,7 @@ print(accRef);
     "PartyA": phoneNo,
     "PartyB": businessShortCode,
     "PhoneNumber": phoneNo,
-    "CallBackURL": callBackURL,
+    "CallBackURL": '${callBackURL}/cb/$accRef',
     "AccountReference": accRef,
     "TransactionDesc": "Kite Holdings"
 };
@@ -43,5 +42,4 @@ print(accRef);
 
   return json.decode(r.body);
 
-// return {"ff":"ff"};
 }

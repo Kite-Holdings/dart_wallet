@@ -9,7 +9,7 @@ String businessLabel = "testapi";
 
 String getTokenURL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
 
-String callBackURL = "https://e20a8899.ngrok.io/wallet/third_party/mpesa/initiateLipaNaMpesaResponse";
+String callBackURL = "13.59.89.190:2011";
 String apiURL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
 String b2cURL = 'https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest';
 String b2bURL = 'https://sandbox.safaricom.co.ke/mpesa/b2b/v1/paymentrequest';

@@ -3,6 +3,7 @@ import 'package:e_pay_gateway/controllers/accounts/merchant_account_controllewr.
 import 'package:e_pay_gateway/controllers/company/auth.dart';
 import 'package:e_pay_gateway/controllers/company/company_controller.dart';
 import 'package:e_pay_gateway/controllers/company/token_controller.dart';
+import 'package:e_pay_gateway/controllers/responses/mpesa_responses.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/buy_goods_servisesController.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/deposit_request_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/paybill_controller.dart';
@@ -47,11 +48,9 @@ class EPayGatewayChannel extends ApplicationChannel {
 
     router
       .route("/")
-    .linkFunction((request)async{
-      // return pesaLinkTransact();
-      final TokenModel tokenModel = TokenModel();
-      return Response.ok(await tokenModel.verifyToken("CDANv5SDFV2PYuFLFLXO"));
-      // return Response.ok(await tokenModel.getToken(owner: "wallets/companies/5d9f4c5396369ead33772e64"));
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
+      .linkFunction((request)async{
+      return Response.ok({'hi': 'hi'});
     });
 
     // Accounts
@@ -68,13 +67,13 @@ class EPayGatewayChannel extends ApplicationChannel {
     // Company
     router
       .route('/token')
-      .link(() => Authorizer.basic(PasswordVerifier()))
+      .link(() => Authorizer.basic(BasicAouthVerifier()))
       .link(() => TokenController());
 
 
 
     router
-      .route("/companies/[:accountId]")
+      .route("/companies/[:companyId]")
     .link(() => CompaniesController());
 
 
@@ -82,31 +81,45 @@ class EPayGatewayChannel extends ApplicationChannel {
     // Mpesa only
     router
       .route('/thirdParties/mpesa/paybill')
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => PaybillController());
     router
       .route('/thirdParties/mpesa/buygoodsServices')
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => BuyGoodsServicesController());
     router
       .route('/thirdParties/mpesa/transfertoPhone')
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => TransferPhoneController());
     router
       .route("/thirdParties/mpesa/depositRequest")
+      // .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => DepositRequestController());
+
+    
+    // Responses
+    router
+      .route("mpesaResponces/cb/[:accRef]")
+      .link(() => MpesaStkCallbackController());
 
 
     
     // Wallet 
     router
       .route('/wallet/thirdParties/mpesa/paybill')
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => WalletMpesaPaybillController());
     router
       .route('/wallet/thirdParties/mpesa/buygoodsServices')
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => WalletMpesaBuyGoodsServicesController());
     router
       .route('/wallet/thirdParties/mpesa/transfertoPhone')
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => WalletMpesaPhoneNoController());
     router
       .route("/wallet/wallet/transfer")
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => WalletWalletController());
 
 

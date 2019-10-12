@@ -28,10 +28,10 @@ class WalletToPhoneNo extends Serializable{
       return amount + mpesaToPhoneRate() + amount *thirdPatyRate;
     }
 
-    final WalletSerializer wallet = WalletSerializer();
+    // final WalletSerializer wallet = WalletSerializer();
 
-    // credit sender
-    await wallet.credit(accountNo: senderAccount, amount: transactionAmount());
+    // // credit sender
+    // await wallet.credit(accountNo: senderAccount, amount: transactionAmount());
 
 
     // TODO: Perform B2C

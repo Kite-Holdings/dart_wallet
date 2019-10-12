@@ -28,10 +28,10 @@ class WalletToBuyGoodsServices extends Serializable{
       return amount + mpesaToBuyGoodsServicesRate() + amount *thirdPatyRate;
     }
 
-    final WalletSerializer wallet = WalletSerializer();
+    // final WalletSerializer wallet = WalletSerializer();
 
-    // credit sender
-    await wallet.credit(accountNo: senderAccount, amount: transactionAmount());
+    // // credit sender
+    // await wallet.credit(accountNo: senderAccount, amount: transactionAmount());
 
     // TODO: Perform B2B check if success
     var response = await buyGoodsServices(tillNo: businessNo, amount: amount.toString());

@@ -3,7 +3,7 @@ import 'package:e_pay_gateway/e_pay_gateway.dart';
 Future main() async {
   final app = Application<EPayGatewayChannel>()
       ..options.configurationFilePath = "config.yaml"
-      ..options.port = 8888;
+      ..options.port = 2011;
 
   final count = Platform.numberOfProcessors ~/ 2;
   await app.start(numberOfInstances: count > 0 ? count : 1);

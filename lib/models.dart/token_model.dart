@@ -49,7 +49,7 @@ class TokenModel {
     );
     if(_tokenInfo['token'] != null){
       // TODO: check if token has expired
-      bool _hasExpired = DateTime.now().millisecondsSinceEpoch/100 > int.parse(_tokenInfo['validTill'].toString());
+      bool _hasExpired = DateTime.now().millisecondsSinceEpoch/1000 > int.parse(_tokenInfo['validTill'].toString());
 
 
       // TODO: if not expired return owner obj
@@ -81,7 +81,7 @@ class TokenModel {
 
 
   int _getExpireDate(int duration){
-    double _duration = DateTime.now().millisecondsSinceEpoch/100 + duration;
+    double _duration = DateTime.now().millisecondsSinceEpoch/1000 + duration;
 
     return _duration.floor();
   }
