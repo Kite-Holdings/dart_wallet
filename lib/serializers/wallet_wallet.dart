@@ -40,8 +40,8 @@ class WalletToWallet extends Serializable{
     WalletActivitiesModel _senderWalletActivity = WalletActivitiesModel(
       walletId: _newSenderInfo['_id'].toString(),
       walletNo: senderAccount,
-      secontPartyWalleNo: recipientAccount,
-      action: "sent",
+      secontPartyAccNo: recipientAccount,
+      action: WalletActivityAction.sent,
       amount: transactionAmount(),
       balance: double.parse(_newSenderInfo['balance'].toString())
     );
@@ -49,8 +49,8 @@ class WalletToWallet extends Serializable{
     WalletActivitiesModel _recipientWalletActivity = WalletActivitiesModel(
       walletId: _newRecipientInfo['_id'].toString(),
       walletNo: recipientAccount,
-      secontPartyWalleNo: senderAccount,
-      action: "received",
+      secontPartyAccNo: senderAccount,
+      action: WalletActivityAction.received,
       amount: amount,
       balance: double.parse(_newRecipientInfo['balance'].toString())
     );

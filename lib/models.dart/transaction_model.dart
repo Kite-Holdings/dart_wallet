@@ -10,7 +10,9 @@ class TransactionModel {
     this.recipientInfo,
     this.amount,
     this.cost,
+    this.totalAmount,
     this.transactionType
+    
   });
 
   DateTime timeStamp;
