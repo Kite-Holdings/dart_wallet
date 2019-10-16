@@ -11,6 +11,7 @@ class MpesaStkCallbackController extends ResourceController{
 
     final Db _db = Db(databaseUrl);
     final DbCollection _mpesaResponses = _db.collection("mpesaResponses");
+print(_body);
     await _db.open();
     await _mpesaResponses.save(_body);
     await _db.close();

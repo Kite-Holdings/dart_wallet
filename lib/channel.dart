@@ -56,11 +56,11 @@ class EPayGatewayChannel extends ApplicationChannel {
     // Accounts
     // consumer
     router
-      .route("accounts/consumer/:accountId")
+      .route("accounts/consumer/[:accountId]")
     .link(() => ConsumerAccountController());
     // merchant
     router
-      .route("accounts/merchant/:accountId")
+      .route("accounts/merchant/[:accountId]")
     .link(() => MerchantAccountController());
     
     
@@ -81,15 +81,15 @@ class EPayGatewayChannel extends ApplicationChannel {
     // Mpesa only
     router
       .route('/thirdParties/mpesa/paybill')
-      .link(() => Authorizer.bearer(BearerAouthVerifier()))
+      // .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => PaybillController());
     router
       .route('/thirdParties/mpesa/buygoodsServices')
-      .link(() => Authorizer.bearer(BearerAouthVerifier()))
+      // .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => BuyGoodsServicesController());
     router
       .route('/thirdParties/mpesa/transfertoPhone')
-      .link(() => Authorizer.bearer(BearerAouthVerifier()))
+      // .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => TransferPhoneController());
     router
       .route("/thirdParties/mpesa/depositRequest")

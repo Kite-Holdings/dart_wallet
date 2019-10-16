@@ -19,8 +19,8 @@ Future bPhoneNo({String phoneNo, String amount})async{
       "PartyA": businessShortCode,
       "PartyB": phoneNo,
       "Remarks": "test",
-      "QueueTimeOutURL": callBackURL,
-      "ResultURL": callBackURL,
+      "QueueTimeOutURL": "https://7eaf6301.ngrok.io/mpesaResponces/cb",
+      "ResultURL": "https://7eaf6301.ngrok.io/mpesaResponces/cb",
       "AccountReference": "test123"
   };
   final Map<String, String> headers = {
