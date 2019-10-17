@@ -31,11 +31,14 @@ class WalletToWallet extends Serializable{
     }
 
     final WalletSerializer wallet = WalletSerializer();
+    print("one");
 
     // credit sender
     final Map<String, dynamic> _newSenderInfo = await wallet.credit(accountNo: senderAccount, amount: transactionAmount());
+    print("othree");
     // debit recipient
     final Map<String, dynamic> _newRecipientInfo = await wallet.debit(accountNo: recipientAccount, amount: amount);
+    print("two");
 
     WalletActivitiesModel _senderWalletActivity = WalletActivitiesModel(
       walletId: _newSenderInfo['_id'].toString(),

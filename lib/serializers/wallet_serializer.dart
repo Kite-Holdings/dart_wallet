@@ -7,7 +7,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 class WalletSerializer extends Serializable{
   String accountRef;
   double balance;
-  String walletAccountNo;
+  String wallet_account_no;
 
 
   static Db db =  Db(databaseUrl);
@@ -18,7 +18,7 @@ class WalletSerializer extends Serializable{
     return {
       "accountRef": accountRef,
       "balance": balance,
-      "walletAccountNo": walletAccountNo,
+      "wallet_account_no": wallet_account_no,
     };
   }
 
@@ -26,7 +26,7 @@ class WalletSerializer extends Serializable{
   void readFromMap(Map<String, dynamic> object) {
     accountRef = object['accountRef'].toString();
     balance = double.parse(object['balance'].toString());
-    walletAccountNo = object['walletAccountNo'].toString();
+    wallet_account_no = object['wallet_account_no'].toString();
   }
 
 
@@ -35,8 +35,8 @@ class WalletSerializer extends Serializable{
   /// It returns a details of the created virtual wallet
   Future<Map<String, dynamic>> save({String companyCode, String accountType,String accountRefference})async{
     int c = await companyCounter ('wallet_account');
-    walletAccountNo = stringifyCount(c);
-    walletAccountNo = companyCode + accountType + walletAccountNo;
+    wallet_account_no = stringifyCount(c);
+    wallet_account_no = companyCode + accountType + wallet_account_no;
     accountRef = accountRefference;
     balance = 0;
     await db.open();
@@ -44,9 +44,9 @@ class WalletSerializer extends Serializable{
     await wallets.insert({
       'balance': balance,
       'accountRef': accountRef,
-      'walletAccountNo': walletAccountNo
+      'wallet_account_no': wallet_account_no
     });
-    Map<String, dynamic> wallet = await wallets.findOne(where.eq('walletAccountNo', walletAccountNo));
+    Map<String, dynamic> wallet = await wallets.findOne(where.eq('wallet_account_no', wallet_account_no));
     await db.close();
     String wallet_ref = databaseName + '/wallets/' + wallet['_id'].toString() ;
     wallet['ref'] = wallet_ref;
@@ -56,7 +56,7 @@ class WalletSerializer extends Serializable{
   // TODO: create a fuction to check if wallet exist
 
   /// This function decrements wallet ballance by some amount
-  /// It takes two arguments, the wallet account number(walletAccountNo) and amount (amount)
+  /// It takes two arguments, the wallet account number(wallet_account_no) and amount (amount)
   /// It returns a Map of status with balance
   /// If the transaction failed the status is "failed", else "success"
   Future<Map<String, dynamic>> credit({String accountNo, double amount})async{
@@ -65,7 +65,7 @@ class WalletSerializer extends Serializable{
     // TODO: Verify if sender wallet got enough cash
     // If so subract amount from acc
     final Map<String, dynamic> _info =await wallets.findAndModify(
-      query: where.eq("walletAccountNo", accountNo),
+      query: where.eq("wallet_account_no", accountNo),
       update: {"\$inc":{'balance': -amount}},
       returnNew: true
     );
@@ -82,7 +82,7 @@ class WalletSerializer extends Serializable{
 
 
   /// This function increments wallet ballance by some amount
-  /// It takes two arguments, the wallet account number(walletAccountNo) and amount (amount)
+  /// It takes two arguments, the wallet account number(wallet_account_no) and amount (amount)
   /// It returns a Map of status with balance
   /// If the transaction failed the status is "failed", else "success"
   Future<Map<String, dynamic>> debit({String accountNo, double amount})async{
@@ -92,7 +92,7 @@ class WalletSerializer extends Serializable{
     // TODO: Verify if sender wallet got enough cash
     // If so subract amount from acc
     final Map<String, dynamic> _info =await wallets.findAndModify(
-      query: where.eq("walletAccountNo", accountNo),
+      query: where.eq("wallet_account_no", accountNo),
       update: {"\$inc":{'balance':amount}},
       returnNew: true
     );
