@@ -1,6 +1,6 @@
 import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:e_pay_gateway/models.dart/transaction_model.dart';
-import 'package:e_pay_gateway/models.dart/wallet_activities_model.dart';
+import 'package:e_pay_gateway/models.dart/wallet%20models/wallet_activities_model.dart';
 import 'package:e_pay_gateway/serializers/wallet_serializer.dart';
 import 'package:e_pay_gateway/settings/settings.dart';
 

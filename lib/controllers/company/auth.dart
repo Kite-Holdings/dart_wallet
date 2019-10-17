@@ -12,6 +12,10 @@ class BasicAouthVerifier extends AuthValidator {
     await db.open();
     final Map<String, dynamic> _company = await _companies.findOne(where.eq("consumerKey", _aouthDetails[0]));
     await db.close();
+    if(_company == null) {
+      return null;
+      }
+
     if (_company['secreteKey'].toString() == _aouthDetails[1]) {
       return null;
     }

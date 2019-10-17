@@ -1,5 +1,5 @@
 import 'package:e_pay_gateway/e_pay_gateway.dart';
-import 'package:e_pay_gateway/models.dart/company_model.dart';
+import 'package:e_pay_gateway/models.dart/companies%20models/company_model.dart';
 import 'package:e_pay_gateway/serializers/company/company_serializer.dart';
 
 class CompaniesController extends ResourceController{
@@ -15,7 +15,6 @@ class CompaniesController extends ResourceController{
       return Response.serverError();
     }
 
-    
   }
 
   @Operation.get('companyId')
