@@ -1,6 +1,5 @@
 import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:e_pay_gateway/serializers/mpesa/rates.dart';
-import 'package:e_pay_gateway/serializers/wallet_serializer.dart';
 import 'package:e_pay_gateway/settings/settings.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/b_b_buy_goods_services.dart';
 

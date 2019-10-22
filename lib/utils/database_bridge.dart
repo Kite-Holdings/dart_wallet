@@ -42,6 +42,21 @@ class DatabaseBridge{
     }
     return _response;
   }
+  // find and update
+  Future<Map<String, dynamic>> findAndModify({SelectorBuilder selector, modify}) async {
+    final Map<String, dynamic> _response = {};
+    await _db.open();
+    try{
+      _response['body'] = await _dbCollection.findAndModify(query: selector, update: modify, returnNew: true);
+      await _db.close();
+      _response['status'] = '0';
+    } catch (e){
+      await _db.close();
+      _response['status'] = '1';
+      _response['body'] = e;
+    }
+    return _response;
+  }
 
   // TODO: Delete
 
@@ -58,6 +73,14 @@ class DatabaseBridge{
   // Find all
   Future<Map<String, dynamic>> find([SelectorBuilder selector]) async {
     return _findOpertations(selector, OpertationType.findAll);
+  }
+
+  // Exist
+  Future<bool> exists(SelectorBuilder selector)async{
+    await _db.open();
+    final int _count = await _dbCollection.count(selector);
+    await _db.close();
+    return _count > 0;
   }
 
   // Insert opertation

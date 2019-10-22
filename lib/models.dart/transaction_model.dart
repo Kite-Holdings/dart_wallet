@@ -59,6 +59,9 @@ class TransactionModel {
       case TransactionType.walletToMpesaBuygoods:
         return "WalletToMpesaBuygoods";
         break;
+      case TransactionType.mpesaToWallet:
+        return "MpesaToWallet";
+        break;
       case TransactionType.walletToCoopPeaslink:
         return "WalletToCoopPesalink";
         break;
@@ -97,6 +100,7 @@ enum TransactionType{
   walletToWallet,
   walletToMpesaPaybill,
   walletToMpesaBuygoods,
+  mpesaToWallet,
   walletToCoopPeaslink,
   walletToCoopIft,
 }

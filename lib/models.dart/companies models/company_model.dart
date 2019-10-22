@@ -1,6 +1,6 @@
 import 'package:e_pay_gateway/controllers/utils/counter_intrement.dart';
 import 'package:e_pay_gateway/models.dart/utils/strigify_count.dart';
-import 'package:e_pay_gateway/serializers/wallet_serializer.dart';
+import 'package:e_pay_gateway/models.dart/wallets/wallet_model.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:random_string/random_string.dart';
 
@@ -56,8 +56,8 @@ class CompanyModel{
       final Map<String, dynamic> account = await _databaseBridge.findOneBy(where.eq('name', name));
       final _id = account['_id'];
       final String companyRef = '$databaseName + /companies/ + ${_id.toString()}';
-      final WalletSerializer walletSerializer = WalletSerializer();
-      final Map<String, dynamic> newWallet = await walletSerializer.save(accountRefference: companyRef, accountType: '1', companyCode: _code);
+      final WalletModel _walletModel = WalletModel(accountRefference: companyRef, accountType: '1', companyCode: _code);
+      final Map<String, dynamic> newWallet = await _walletModel.save();
       final String walletRef = newWallet['ref'].toString();
 
       await _databaseBridge.update(where.eq('_id', account['_id']), modify.set("wallet", walletRef));

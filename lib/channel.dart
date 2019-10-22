@@ -54,6 +54,13 @@ class EPayGatewayChannel extends ApplicationChannel {
       .linkFunction((request)async{
       return Response.ok({'hi': 'hi'});
     });
+    // test
+    router
+      .route("/test")
+      .linkFunction((request)async{
+      print(await request.body.decode());
+      return Response.ok({'hi': 'hi'});
+    });
 
     // Accounts
     // consumer
@@ -123,7 +130,7 @@ class EPayGatewayChannel extends ApplicationChannel {
     // Responses
     // callback
     router
-      .route("mpesaResponces/cb/[:accRef]")
+      .route("mpesaResponces/cb/[:transactionId]")
       .link(() => MpesaStkCallbackController());
     // get all responses
     router

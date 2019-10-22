@@ -1,4 +1,4 @@
-import 'package:e_pay_gateway/serializers/wallet_serializer.dart';
+import 'package:e_pay_gateway/models.dart/wallets/wallet_model.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 
 class AccountModel{
@@ -45,8 +45,12 @@ class AccountModel{
     final Map<String, dynamic> account = await _databaseBridge.findOneBy(where.eq('identifier', identifier));
     final _id = account['_id'];
     final String accountRef = '$databaseName + /accounts/ + ${_id.toString()}';
-    final WalletSerializer walletSerializer = WalletSerializer();
-    final Map<String, dynamic> newWallet = await walletSerializer.save(accountRefference: accountRef, accountType: '0', companyCode: '001');
+    final WalletModel _walletModel = WalletModel(
+      accountRefference: accountRef, 
+      accountType: accountType == AccountType.consumer ? '0' : '1', 
+      companyCode: companyCode
+    );
+    final Map<String, dynamic> newWallet = await _walletModel.save();
     final String walletRef = newWallet['ref'].toString();
 
     await _databaseBridge.update(where.eq('_id', account['_id']), modify.push('wallets', walletRef));
@@ -55,7 +59,7 @@ class AccountModel{
     return {
       'identifier': identifier,
       'username': username,
-      'accountType': accountType,
+      'accountType': _accountType,
       'address': {
         'phoneNo': phoneNo,
         'email': email,
