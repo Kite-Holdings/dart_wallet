@@ -25,20 +25,17 @@ class WalletToWallet extends Serializable{
     amount = double.parse(object['amount'].toString());
   }
 
-  Future<Map<String, dynamic>> performTransaction()async{
+  Future<Map<String, dynamic>> performTransaction({String companyCode})async{
     double transactionAmount (){
       return amount + amount * walletRate;
     }
 
     final WalletSerializer wallet = WalletSerializer();
-    print("one");
 
     // credit sender
     final Map<String, dynamic> _newSenderInfo = await wallet.credit(accountNo: senderAccount, amount: transactionAmount());
-    print("othree");
     // debit recipient
     final Map<String, dynamic> _newRecipientInfo = await wallet.debit(accountNo: recipientAccount, amount: amount);
-    print("two");
 
     WalletActivitiesModel _senderWalletActivity = WalletActivitiesModel(
       walletId: _newSenderInfo['_id'].toString(),
@@ -58,14 +55,16 @@ class WalletToWallet extends Serializable{
       balance: double.parse(_newRecipientInfo['balance'].toString())
     );
 
-    _senderWalletActivity.save().then((Map<String, dynamic> senderObj){
+    await _senderWalletActivity.save().then((Map<String, dynamic> senderObj){
       _recipientWalletActivity.save().then((Map<String, dynamic> recipientObj){
         final TransactionModel trans = TransactionModel(
-        senderInfo: senderObj,
+          senderInfo: senderObj,
+          companyCode: companyCode,
           recipientInfo: recipientObj,
           amount: amount,
-          transactionType: "WalletToWallet",
+          transactionType: TransactionType.walletToWallet,
           cost: transactionAmount() - amount,
+          state: TransactionState.complete
         );
         trans.save();
       });

@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:e_pay_gateway/settings/settings.dart';
-import 'package:mongo_dart/mongo_dart.dart';
+import 'package:e_pay_gateway/utils/database_bridge.dart';
+import 'package:mongo_dart/mongo_dart.dart' show where, ObjectId;
 
 class WalletActivitiesModel{
 
@@ -28,8 +29,7 @@ class WalletActivitiesModel{
   final double balance;
   DateTime timeStamp;
 
-  static Db db =  Db(databaseUrl);
-  final DbCollection walletActivities = db.collection('wallet_transaction_activities');
+  final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'wallet_transaction_activities');
 
   get walletActivityAction => (){
     if(action == WalletActivityAction.received){
@@ -45,8 +45,7 @@ class WalletActivitiesModel{
   Future<Map<String, dynamic>> save()async{
     timeStamp = DateTime.now();
     ObjectId _id = ObjectId();
-    await db.open();
-    await walletActivities.insert({
+    await _databaseBridge.insert({
       "_id": _id,
       "walletDetails": {
         "walletId": walletId,
@@ -59,9 +58,8 @@ class WalletActivitiesModel{
       "amount": amount
     });
 
-    final Map<String, dynamic> _obj = await walletActivities.findOne(where.eq('_id', _id)); 
+    final Map<String, dynamic> _obj = await _databaseBridge.findOneBy(where.eq('_id', _id)); 
 
-    await db.close();
     return _obj;
   }
 

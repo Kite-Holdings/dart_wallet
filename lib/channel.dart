@@ -3,6 +3,7 @@ import 'package:e_pay_gateway/controllers/accounts/merchant_account_controllewr.
 import 'package:e_pay_gateway/controllers/company/auth.dart';
 import 'package:e_pay_gateway/controllers/company/company_controller.dart';
 import 'package:e_pay_gateway/controllers/company/token_controller.dart';
+import 'package:e_pay_gateway/controllers/responses/fetch_mpesa_responses.dart';
 import 'package:e_pay_gateway/controllers/responses/mpesa_responses.dart';
 import 'package:e_pay_gateway/controllers/third_parties/coop_controllers/coop_controllers.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/buy_goods_servisesController.dart';
@@ -120,9 +121,22 @@ class EPayGatewayChannel extends ApplicationChannel {
 
     
     // Responses
+    // callback
     router
       .route("mpesaResponces/cb/[:accRef]")
       .link(() => MpesaStkCallbackController());
+    // get all responses
+    router
+      .route("/mpesaResponces")
+      .link(() => FetchAllMpesaResponsesController());
+    // get responses by account refference
+    router
+      .route("/mpesaResponces/accRef/[:accRef]")
+      .link(() => FetchMpesaResponsesByAccRefController());
+    // get responses by mpesa refference
+    router
+      .route("/mpesaResponces/mpesaRef/[:mpesaRef]")
+      .link(() => FetchMpesaResponsesByMpesaRefController());
 
 
     

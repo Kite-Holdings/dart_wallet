@@ -1,6 +1,6 @@
 import 'package:e_pay_gateway/e_pay_gateway.dart';
-import 'package:e_pay_gateway/settings/settings.dart';
-import 'package:mongo_dart/mongo_dart.dart';
+import 'package:e_pay_gateway/models.dart/mpesa%20models/mpesa_responses_model.dart';
+
 
 class MpesaStkCallbackController extends ResourceController{
   @Operation.post()
@@ -9,12 +9,8 @@ class MpesaStkCallbackController extends ResourceController{
     _body['flag'] = "unprocessed";
     _body['type'] = "stkPush";
 
-    final Db _db = Db(databaseUrl);
-    final DbCollection _mpesaResponses = _db.collection("mpesaResponses");
-print(_body);
-    await _db.open();
-    await _mpesaResponses.save(_body);
-    await _db.close();
+    MpesaResponsesModel _mpesaResponsesModel = MpesaResponsesModel(body: _body);
+    _mpesaResponsesModel.save();
 
     return Response.ok({"message": "done"});
   }
@@ -24,6 +20,7 @@ print(_body);
     Map<String, dynamic> _body = await request.body.decode();
     _body['flag'] = "unprocessed";
     _body['type'] = "stkPush";
+    _body['accRef'] = accRef;
 
     // ResultCode
     if(_body['Body']['stkCallback']['ResultCode'] == 0){
@@ -39,6 +36,8 @@ print(_body);
         _item[_details[i]['Name'].toString()] = _details[i]['Value'];
       }
 
+      _body['MpesaReceiptNumber'] = _item['MpesaReceiptNumber'];
+
       _body['Body'] = {
         "head": _head,
         "data": _item
@@ -46,19 +45,13 @@ print(_body);
       
       _body['flag'] = "complete";
 
-      final Db _db = Db(databaseUrl);
-      final DbCollection _mpesaResponses = _db.collection("mpesaResponses");
-      await _db.open();
-      await _mpesaResponses.save(_body);
-      await _db.close();
+      MpesaResponsesModel _mpesaResponsesModel = MpesaResponsesModel(body: _body);
+      _mpesaResponsesModel.save();
     }
     else{
 
-      final Db _db = Db(databaseUrl);
-      final DbCollection _mpesaResponses = _db.collection("mpesaResponses");
-      await _db.open();
-      await _mpesaResponses.save(_body);
-      await _db.close();
+      MpesaResponsesModel _mpesaResponsesModel = MpesaResponsesModel(body: _body);
+      _mpesaResponsesModel.save();
     }
 
     // TODO: deposit to wallet
