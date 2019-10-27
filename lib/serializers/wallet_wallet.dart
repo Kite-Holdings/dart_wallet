@@ -103,6 +103,7 @@ class WalletToWallet extends Serializable{
           "object": _newSenderInfo
         };
       }
+      // TODO: send to callback
     }
   }
 }

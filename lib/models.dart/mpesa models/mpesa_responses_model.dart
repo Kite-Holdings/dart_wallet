@@ -9,8 +9,11 @@ class MpesaResponsesModel{
   final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'mpesa_responses');
   final Map<String, dynamic> body;
 
-  void save() async{
+  Future<String> save() async{
+    final ObjectId _id = ObjectId();
+    body['_id'] = _id;
     await _databaseBridge.save(body);
+    return _id.toString().split('"')[1];
   }
 
   Future<Map<String, dynamic>> findAll() async {
