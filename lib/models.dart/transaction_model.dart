@@ -6,6 +6,7 @@ import 'package:e_pay_gateway/utils/database_bridge.dart';
 class TransactionModel {
 
   TransactionModel({
+    this.id,
     this.senderInfo,
     this.companyCode,
     this.recipientInfo,
@@ -18,6 +19,7 @@ class TransactionModel {
   });
 
   DateTime timeStamp;
+  final ObjectId id;
   final String companyCode;
   final Map<String, dynamic> senderInfo;
   final Map<String, dynamic> recipientInfo;
@@ -35,6 +37,7 @@ class TransactionModel {
 
 
     final Map<String, dynamic> _trans = await _databaseBridge.insert({
+      "_id": id,
       "senderInfo": senderInfo,
       "companyCode": companyCode,
       "recipientInfo": recipientInfo,

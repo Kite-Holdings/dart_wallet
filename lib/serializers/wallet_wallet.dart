@@ -1,20 +1,24 @@
+import 'package:e_pay_gateway/controllers/responses/wallet_wallet_responses.dart';
 import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:e_pay_gateway/models.dart/transaction_model.dart';
 import 'package:e_pay_gateway/models.dart/wallet_models/wallet_activities_model.dart';
 import 'package:e_pay_gateway/models.dart/wallets/wallet_model.dart';
 import 'package:e_pay_gateway/settings/settings.dart';
+import 'package:e_pay_gateway/utils/database_bridge.dart';
 
 class WalletToWallet extends Serializable{
   String senderAccount;
   String recipientAccount;
   double amount;
+  String callbackUrl;
   @override
   Map<String, dynamic> asMap() {
     
     return {
       "senderAccount": senderAccount,
       "recipientAccount": recipientAccount,
-      "amount": amount
+      "amount": amount,
+      "callbackUrl": callbackUrl,
     };
   }
 
@@ -22,6 +26,7 @@ class WalletToWallet extends Serializable{
   void readFromMap(Map<String, dynamic> object) {
     senderAccount = object['senderAccount'].toString();
     recipientAccount = object['recipientAccount'].toString();
+    callbackUrl = object['callbackUrl'].toString();
     amount = double.parse(object['amount'].toString());
   }
 
@@ -43,7 +48,26 @@ class WalletToWallet extends Serializable{
       double transactionAmount (){
         return amount + amount * walletRate;
       }
+      // Save wallet requests
+      final DatabaseBridge _dbBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'walletTransactionsRequests');
+      final ObjectId _requestObId = ObjectId();
+      await _dbBridge.save({
+        "_id": _requestObId,
+        "senderAccount": senderAccount,
+        "recipientAccount": recipientAccount,
+        "amount": amount,
+        "cost": transactionAmount() - amount,
+        "callbackUrl": callbackUrl
+      });
 
+      final WalletWalletCallbackController _walletWalletCallbackController = WalletWalletCallbackController(
+        senderAccount: senderAccount,
+        recipientAccount: recipientAccount,
+        amount: amount,
+        cost: transactionAmount() - amount,
+        requestId: _requestObId.toString().split('"')[1],
+        callbackUrl: callbackUrl, 
+      );
       
       // credit sender
       final Map<String, dynamic> _newSenderInfo = await _walletModel.credit(accountNo: senderAccount, amount: transactionAmount());
@@ -52,7 +76,7 @@ class WalletToWallet extends Serializable{
         // debit recipient
         final Map<String, dynamic> _newRecipientInfo = await _walletModel.debit(accountNo: recipientAccount, amount: amount);
 
-        WalletActivitiesModel _senderWalletActivity = WalletActivitiesModel(
+        final WalletActivitiesModel _senderWalletActivity = WalletActivitiesModel(
           walletId: _newSenderInfo['_id'].toString(),
           walletNo: senderAccount,
           secontPartyAccNo: recipientAccount,
@@ -61,7 +85,7 @@ class WalletToWallet extends Serializable{
           balance: double.parse(_newSenderInfo['balance'].toString())
         );
 
-        WalletActivitiesModel _recipientWalletActivity = WalletActivitiesModel(
+        final WalletActivitiesModel _recipientWalletActivity = WalletActivitiesModel(
           walletId: _newRecipientInfo['_id'].toString(),
           walletNo: recipientAccount,
           secontPartyAccNo: senderAccount,
@@ -72,7 +96,9 @@ class WalletToWallet extends Serializable{
 
         await _senderWalletActivity.save().then((Map<String, dynamic> senderObj){
           _recipientWalletActivity.save().then((Map<String, dynamic> recipientObj){
+            final ObjectId _transId = ObjectId();
             final TransactionModel trans = TransactionModel(
+              id: _transId,
               senderInfo: senderObj,
               companyCode: companyCode,
               recipientInfo: recipientObj,
@@ -82,6 +108,13 @@ class WalletToWallet extends Serializable{
               state: TransactionState.complete
             );
             trans.save();
+            
+            // TODO: send to callback
+            _walletWalletCallbackController.transactionId = _transId.toString().split('"')[1];
+            _walletWalletCallbackController.statusCode = '0';
+            _walletWalletCallbackController.statusDescription = 'success';
+            _walletWalletCallbackController.sendCallBack();
+            
           });
           
         });
@@ -97,13 +130,16 @@ class WalletToWallet extends Serializable{
         };
       } // endif
       else{
+        // TODO: send to callback
+            _walletWalletCallbackController.statusCode = '1';
+            _walletWalletCallbackController.statusDescription = 'failed';
+            _walletWalletCallbackController.sendCallBack();
         return {
           "statusCode": 1,
           "message": _newSenderInfo['message'],
           "object": _newSenderInfo
         };
       }
-      // TODO: send to callback
     }
   }
 }
