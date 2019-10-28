@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:e_pay_gateway/third_party_operations/flutter_wave/encryp.dart';
 import 'package:e_pay_gateway/third_party_operations/flutter_wave/settings.dart';
+import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/http.dart' as http;
 
 class FlutterWaveCardDeposit{
@@ -10,7 +11,7 @@ class FlutterWaveCardDeposit{
     this.cardNo,
     this.cvv,
     this.expiryMonth,
-    this.expiryyear,
+    this.expiryYear,
     this.currency = 'KES',
     this.country = 'KE',
     this.amount,
@@ -20,7 +21,7 @@ class FlutterWaveCardDeposit{
   final String cardNo;
   final String cvv;
   final String expiryMonth;
-  final String expiryyear;
+  final String expiryYear;
   final String currency;
   final String country;
   final String amount;
@@ -32,12 +33,14 @@ class FlutterWaveCardDeposit{
   String redirectUrl = flutterWaveCardredirect;
 
   Future flutterWaveCardTransact() async{
+    ObjectId _objId = ObjectId();
+    txRef = _objId.toString().split('"')[1];
     final Map<String, dynamic> _data = {
       "PBFPubKey": _publicKey,
       "cardno": cardNo,
       "cvv": cvv,
       "expirymonth": expiryMonth,
-      "expiryyear": expiryyear,
+      "expiryyear": expiryYear,
       "currency": currency,
       "country": country,
       "amount": amount,
@@ -61,7 +64,7 @@ class FlutterWaveCardDeposit{
 
     final http.Response _flutterWaveRes = await http.post(url, headers: headers, body: json.encode(_payload));
 
-    return _flutterWaveRes.body;
+    return json.decode(_flutterWaveRes.body);
 
 
   }

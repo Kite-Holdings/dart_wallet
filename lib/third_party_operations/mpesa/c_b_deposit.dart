@@ -52,7 +52,7 @@ Future depositRequest({
     "CallBackURL": '${callBackURL}/cb/$_objIdStr',
     "AccountReference": referenceNumber != null ? referenceNumber : accRef,
     "TransactionDesc": transactionDesc
-};
+  };
 
   final Map<String, String> headers = {
       'content-type': 'application/json',

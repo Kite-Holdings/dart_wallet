@@ -6,6 +6,7 @@ import 'package:e_pay_gateway/controllers/company/token_controller.dart';
 import 'package:e_pay_gateway/controllers/responses/fetch_mpesa_responses.dart';
 import 'package:e_pay_gateway/controllers/responses/mpesa_responses.dart';
 import 'package:e_pay_gateway/controllers/third_parties/coop_controllers/coop_controllers.dart';
+import 'package:e_pay_gateway/controllers/third_parties/flutter_wave/flutterwave_card_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/buy_goods_servisesController.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/deposit_request_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/paybill_controller.dart';
@@ -105,6 +106,13 @@ class EPayGatewayChannel extends ApplicationChannel {
     router
       .route('/thirdParties/coop/ift/receive')
       .link(() => CoopInternalFundsTransferReceiveController());
+
+
+    // Flutterwave
+    // card deposit
+    router
+      .route('/thirdParties/flutterwave/card')
+      .link(()=> FlutterwaveCardController());
 
 
 
