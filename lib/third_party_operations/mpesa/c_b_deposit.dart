@@ -26,8 +26,8 @@ Future depositRequest({
   var _password = base64.encode(bytes);
 
   DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'mpesaCallbackUrls');
-  ObjectId _objId = ObjectId();
-  String _objIdStr = _objId.toString().split('"')[1];
+  final ObjectId _objId = ObjectId();
+  final String _objIdStr = _objId.toString().split('"')[1];
   await _databaseBridge.save(
     {
       "_id": _objId,
@@ -62,7 +62,9 @@ Future depositRequest({
   final String url = c2bURL;
 
   final http.Response r = await http.post(url, headers: headers, body: json.encode(payload));
+  final _mpesaRes = json.decode(r.body);
+  _mpesaRes['reqRef'] = _objIdStr;
 
-  return json.decode(r.body);
+  return _mpesaRes;
 
 }
