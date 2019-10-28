@@ -1,0 +1,70 @@
+import 'dart:convert';
+
+import 'package:e_pay_gateway/third_party_operations/flutter_wave/encryp.dart';
+import 'package:e_pay_gateway/third_party_operations/flutter_wave/settings.dart';
+import 'package:http/http.dart' as http;
+
+class FlutterWaveCardDeposit{
+
+  FlutterWaveCardDeposit({
+    this.cardNo,
+    this.cvv,
+    this.expiryMonth,
+    this.expiryyear,
+    this.currency = 'KES',
+    this.country = 'KE',
+    this.amount,
+    this.email,
+  });
+
+  final String cardNo;
+  final String cvv;
+  final String expiryMonth;
+  final String expiryyear;
+  final String currency;
+  final String country;
+  final String amount;
+  final String email;
+
+  final String _publicKey = flutterWavePubKey;
+  final String _secretKey = flutterWaveSecurityKey;
+  String txRef;
+  String redirectUrl = flutterWaveCardredirect;
+
+  Future flutterWaveCardTransact() async{
+    final Map<String, dynamic> _data = {
+      "PBFPubKey": _publicKey,
+      "cardno": cardNo,
+      "cvv": cvv,
+      "expirymonth": expiryMonth,
+      "expiryyear": expiryyear,
+      "currency": currency,
+      "country": country,
+      "amount": amount,
+      "email": email,
+      "txRef": txRef,
+      "redirect_url": redirectUrl,
+    };
+
+    final String _hashedSecKey = getKey(_secretKey);
+    final String encrypt3DESKey = encryptData(_hashedSecKey, json.encode(_data));
+    final Map<String, dynamic> _payload = {
+        "PBFPubKey": _publicKey,
+        "client": encrypt3DESKey,
+        "alg": "3DES-24"
+    };
+
+    const String url = flutterWaveCardUrl;
+    final Map<String, String> headers = {
+      'content-type': 'application/json',
+    };
+
+    final http.Response _flutterWaveRes = await http.post(url, headers: headers, body: json.encode(_payload));
+
+    return _flutterWaveRes.body;
+
+
+  }
+
+
+}
