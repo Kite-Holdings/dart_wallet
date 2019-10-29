@@ -64,14 +64,14 @@ class EPayGatewayChannel extends ApplicationChannel {
       return Response.ok({'hi': 'hi'});
     });
 
-    // requests
-    router
-      .route('/requestM')
-      .linkFunction((request)async{
-        DatabaseBridge _dbb = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'mpesaCallbackUrls');
+    // // requests
+    // router
+    //   .route('/requestM')
+    //   .linkFunction((request)async{
+    //     DatabaseBridge _dbb = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'mpesaCallbackUrls');
         
-      return Response.ok(await _dbb.find());
-    });
+    //   return Response.ok(await _dbb.find());
+    // });
 
     // Accounts
     // consumer
