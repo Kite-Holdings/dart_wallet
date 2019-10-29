@@ -16,6 +16,7 @@ import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_paybill.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_phone_no.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_wallet.dart';
 import 'package:e_pay_gateway/models.dart/token_model.dart';
+import 'package:e_pay_gateway/utils/database_bridge.dart';
 
 import 'e_pay_gateway.dart';
 
@@ -61,6 +62,15 @@ class EPayGatewayChannel extends ApplicationChannel {
       .linkFunction((request)async{
       print(await request.body.decode());
       return Response.ok({'hi': 'hi'});
+    });
+
+    // requests
+    router
+      .route('/requestM')
+      .linkFunction((request)async{
+        DatabaseBridge _dbb = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'mpesaCallbackUrls');
+        
+      return Response.ok(await _dbb.find());
     });
 
     // Accounts

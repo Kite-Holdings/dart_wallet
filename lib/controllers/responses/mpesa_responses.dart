@@ -4,6 +4,7 @@ import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:e_pay_gateway/models.dart/mpesa%20models/mpesa_responses_model.dart';
 import 'package:e_pay_gateway/models.dart/request_responses/transaction_response.dart';
 import 'package:e_pay_gateway/models.dart/transaction_model.dart';
+import 'package:e_pay_gateway/models.dart/wallets/wallet_model.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/http.dart' as http;
 
@@ -44,7 +45,7 @@ class MpesaStkCallbackController extends ResourceController{
     String _recieptNo;
 
     // ResultCode
-    if(_body['Body']['stkCallback']['ResultCode'] == 0){
+    if(_body['Body'] != null && _body['Body']['stkCallback'] != null && _body['Body']['stkCallback']['ResultCode'] == 0){
       
       
       Map<String, dynamic> _head = {};
@@ -75,8 +76,8 @@ class MpesaStkCallbackController extends ResourceController{
       final MpesaResponsesModel _mpesaResponsesModel = MpesaResponsesModel(body: _body);
       _transactionId = await _mpesaResponsesModel.save();
       // deposit to wallet
-      // final WalletModel _walletModel = WalletModel();
-      // final Map<String, dynamic> _recipientInfo = await _walletModel.debit(amount: amount, accountNo: walletAccountNo);
+      final WalletModel _walletModel = WalletModel();
+      final Map<String, dynamic> _recipientInfo = await _walletModel.debit(amount: amount, accountNo: walletAccountNo);
       _resultStatus = "Completed";
     }
     else{
