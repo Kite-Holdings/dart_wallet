@@ -26,16 +26,15 @@ class MerchantAccountController extends ResourceController{
     final ObjectId _objectId = ObjectId.parse(request.authorization.clientID);
     final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'companies');
     final Map<String, dynamic> _compay = await _databaseBridge.findOneBy(where.id(_objectId));
-    final ConsumerAccountSerializer _account = ConsumerAccountSerializer();
     final AccountModel _accountModel = AccountModel(
       companyCode: _compay['code'].toString(),
-      identifier: _account.identifier,
-      identifierType: _account.getIdentifierType,
-      username: _account.username,
-      password: _account.password,
-      phoneNo: _account.phoneNo,
-      email: _account.email,
-      accountType: AccountType.consumer,
+      identifier: accountSerializer.identifier,
+      identifierType: IdentifierType.kraPin,
+      username: accountSerializer.username,
+      password: accountSerializer.password,
+      phoneNo: accountSerializer.phoneNo,
+      email: accountSerializer.email,
+      accountType: AccountType.merchant,
     );
     return Response.ok(await _accountModel.save());
   }

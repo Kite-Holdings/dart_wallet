@@ -54,8 +54,8 @@ class CompanyModel{
       });
 
       final Map<String, dynamic> account = await _databaseBridge.findOneBy(where.eq('name', name));
-      final _id = account['_id'];
-      final String companyRef = '$databaseName + /companies/ + ${_id.toString()}';
+      final _id = account['_id'].toString().split('"')[1];
+      final String companyRef = '$databaseName/companies/${_id.toString()}';
       final WalletModel _walletModel = WalletModel(accountRefference: companyRef, accountType: '1', companyCode: _code);
       final Map<String, dynamic> newWallet = await _walletModel.save();
       final String walletRef = newWallet['ref'].toString();

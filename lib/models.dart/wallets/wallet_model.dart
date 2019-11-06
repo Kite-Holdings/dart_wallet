@@ -16,7 +16,7 @@ class WalletModel{
 
   String accountRef;
   double balance;
-  String wallet_account_no;
+  String walletAccountNo;
   final String companyCode;
   final String accountType;
   final String accountRefference;
@@ -25,27 +25,32 @@ class WalletModel{
 
   // check if wallet exist
   Future<bool> walletExist(String accountNo)async{
-    return _databaseBridge.exists(where.eq("wallet_account_no", accountNo));
+    return _databaseBridge.exists(where.eq("walletAccountNo", accountNo));
   }
 
   // TODO: create
   Future<Map<String, dynamic>> save() async {
-    int c = await companyCounter ('wallet_account_no');
-    wallet_account_no = stringifyCount(c, 9);
-    wallet_account_no = companyCode + accountType + wallet_account_no;
+    int c = await companyCounter ('walletAccountNo');
+    walletAccountNo = stringifyCount(c, 9);
+    walletAccountNo = companyCode + accountType + walletAccountNo;
     accountRef = accountRefference;
     balance = 0;
 
-   
+    try{
+        await _databaseBridge.insert({
+          'balance': balance,
+          'accountRef': accountRef,
+          'walletAccountNo': walletAccountNo
+        });
+    } catch (e){
 
-    await _databaseBridge.insert({
-      'balance': balance,
-      'accountRef': accountRef,
-      'wallet_account_no': wallet_account_no
-    });
+    }
+    Map<String, dynamic> wallet;
+    try{
+        wallet = await _databaseBridge.findOneBy(where.eq('walletAccountNo', walletAccountNo));
 
-    final Map<String, dynamic> wallet = await _databaseBridge.findOneBy(where.eq('wallet_account_no', wallet_account_no));
-     
+    } catch (e){
+    }    
     if(wallet != null){
       final String _walletIdObj= wallet['_id'].toString();
       final String _walletId= _walletIdObj.split('"')[1];
@@ -65,7 +70,7 @@ class WalletModel{
 
   // TODO: get credit
   /// This function decrements wallet ballance by some amount
-  /// It takes two arguments, the wallet account number(wallet_account_no) and amount (amount)
+  /// It takes two arguments, the wallet account number(walletAccountNo) and amount (amount)
   /// It returns a Map of status with balance
   /// If the transaction failed the status is "failed", else "success"
   Future<Map<String, dynamic>> credit({String accountNo, double amount})async{
@@ -73,7 +78,7 @@ class WalletModel{
     // If so subract amount from acc
     try{
       final Map<String, dynamic> _res =await _databaseBridge.findAndModify(
-        selector: where.eq("wallet_account_no", accountNo).gt("balance", amount),
+        selector: where.eq("walletAccountNo", accountNo).gt("balance", amount),
         modify: {"\$inc":{"balance": -amount}},
       );
       final _info = _res['body'];
@@ -94,7 +99,7 @@ class WalletModel{
 
   // TODO: get debit
   /// This function increments wallet ballance by some amount
-  /// It takes two arguments, the wallet account number(wallet_account_no) and amount (amount)
+  /// It takes two arguments, the wallet account number(walletAccountNo) and amount (amount)
   /// It returns a Map of status with balance
   /// If the transaction failed the status is "failed", else "success"
   Future<Map<String, dynamic>> debit({String accountNo, double amount})async{
@@ -102,7 +107,7 @@ class WalletModel{
     // If so subract amount from acc
     try{
       final Map<String, dynamic> _res =await _databaseBridge.findAndModify(
-        selector: where.eq("wallet_account_no", accountNo),
+        selector: where.eq("walletAccountNo", accountNo),
         modify: {"\$inc":{'balance':amount}},
       );
       final _info = _res['body'];

@@ -2,7 +2,7 @@ import 'package:e_pay_gateway/e_pay_gateway.dart';
 
 class MerchantAccountSerializer extends Serializable{
   String identifier;
-  String identifierType = 'KRAPin';
+  String identifierType;
   String username;
   String phoneNo;
   String email;
@@ -13,6 +13,7 @@ class MerchantAccountSerializer extends Serializable{
   Map<String, dynamic> asMap() {
     return {
       "identifier": identifier,
+      "identifierType": identifierType,
       "username": username,
       "phoneNo": phoneNo,
       "email": email,

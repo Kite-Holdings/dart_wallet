@@ -55,9 +55,8 @@ class AccountModel{
     print('past');
     final Map<String, dynamic> newWallet = await _walletModel.save();
     final String walletRef = newWallet['ref'].toString();
-print('before');
     await _databaseBridge.update(where.eq('_id', _id), modify.push('wallets', walletRef));
-print('after');
+
 
     return {
       'identifier': identifier,
