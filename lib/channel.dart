@@ -16,6 +16,7 @@ import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_paybill.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_phone_no.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_wallet.dart';
 import 'package:e_pay_gateway/models.dart/token_model.dart';
+import 'package:e_pay_gateway/third_party_operations/cellulant/validate_account.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/io_client.dart';
 
@@ -91,6 +92,14 @@ class EPayGatewayChannel extends ApplicationChannel {
       .route("accounts/merchant/[:accountId]")
       .link(() => Authorizer.bearer(BearerAouthVerifier()))
     .link(() => MerchantAccountController());
+
+    // Cellulant
+    router
+      .route('/thirdParties/cellulant/validateAcc')
+      .linkFunction((request) async{
+        final ValidateAccount _validateAccount = ValidateAccount();
+        return Response.ok(await _validateAccount.validate());
+      });
     
     
     // Company

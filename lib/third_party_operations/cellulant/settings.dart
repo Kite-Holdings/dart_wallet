@@ -1,0 +1,1 @@
+String validateAccUrl = 'http://197.159.100.249:9000/hub/services/paymentGateway/JSON/Validation.php';
