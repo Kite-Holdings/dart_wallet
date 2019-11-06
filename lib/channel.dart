@@ -17,6 +17,7 @@ import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_phone_no.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_wallet.dart';
 import 'package:e_pay_gateway/models.dart/token_model.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
+import 'package:http/io_client.dart';
 
 import 'e_pay_gateway.dart';
 
@@ -52,8 +53,14 @@ class EPayGatewayChannel extends ApplicationChannel {
 
     router
       .route("/")
-      .link(() => Authorizer.bearer(BearerAouthVerifier()))
+      // .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .linkFunction((request)async{
+        bool trustSelfSigned = true;
+  HttpClient httpClient = new HttpClient()
+    ..badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => trustSelfSigned);
+  IOClient ioClient = new IOClient(httpClient);
+        await ioClient.get('https://api-sit.co-opbank.co.ke/store/');
       return Response.ok({'hi': 'hi'});
     });
     // test
@@ -66,7 +73,7 @@ class EPayGatewayChannel extends ApplicationChannel {
 
     // requests
     router
-      .route('/requestM')
+      .route("/requestM")
       .linkFunction((request)async{
         DatabaseBridge _dbb = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'mpesaCallbackUrls');
         
@@ -77,10 +84,12 @@ class EPayGatewayChannel extends ApplicationChannel {
     // consumer
     router
       .route("accounts/consumer/[:accountId]")
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
     .link(() => ConsumerAccountController());
     // merchant
     router
       .route("accounts/merchant/[:accountId]")
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
     .link(() => MerchantAccountController());
     
     

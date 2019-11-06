@@ -29,9 +29,12 @@ class AccountModel{
 
   // TODO: save
   Future<Map<String, dynamic>> save()async{
+
     // TODO: hash password
+    ObjectId _id = ObjectId();
 
     await _databaseBridge.insert({
+      '_id': _id,
       'identifier': identifier,
       'identifierType': _identifierType,
       'accountType': _accountType,
@@ -42,19 +45,19 @@ class AccountModel{
       },
       'wallets': [],
     });
-    final Map<String, dynamic> account = await _databaseBridge.findOneBy(where.eq('identifier', identifier));
-    final _id = account['_id'];
-    final String accountRef = '$databaseName + /accounts/ + ${_id.toString()}';
+    final _idStr = _id.toString().split('"')[1];
+    final String accountRef = '$databaseName/accounts/$_idStr';
     final WalletModel _walletModel = WalletModel(
       accountRefference: accountRef, 
       accountType: accountType == AccountType.consumer ? '0' : '1', 
       companyCode: companyCode
     );
+    print('past');
     final Map<String, dynamic> newWallet = await _walletModel.save();
     final String walletRef = newWallet['ref'].toString();
-
-    await _databaseBridge.update(where.eq('_id', account['_id']), modify.push('wallets', walletRef));
-
+print('before');
+    await _databaseBridge.update(where.eq('_id', _id), modify.push('wallets', walletRef));
+print('after');
 
     return {
       'identifier': identifier,

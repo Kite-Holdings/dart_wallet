@@ -36,17 +36,24 @@ class WalletModel{
     accountRef = accountRefference;
     balance = 0;
 
-    await _databaseBridge.save({
+   
+
+    await _databaseBridge.insert({
       'balance': balance,
       'accountRef': accountRef,
       'wallet_account_no': wallet_account_no
     });
 
-    Map<String, dynamic> wallet = await _databaseBridge.findOneBy(where.eq('wallet_account_no', wallet_account_no));
-    final String _walletIdObj= wallet['_id'].toString();
-    final String _walletId= _walletIdObj.split('"')[1];
-    final String walletRef = '${databaseName}/wallets/$_walletId';
-    wallet['ref'] = walletRef;
+    final Map<String, dynamic> wallet = await _databaseBridge.findOneBy(where.eq('wallet_account_no', wallet_account_no));
+     
+    if(wallet != null){
+      final String _walletIdObj= wallet['_id'].toString();
+      final String _walletId= _walletIdObj.split('"')[1];
+      final String walletRef = '${databaseName}/wallets/$_walletId';
+      wallet['ref'] = walletRef;
+    }else{
+      wallet['ref'] = null;
+    }
     return wallet;
   }
 
