@@ -163,7 +163,7 @@ class EPayGatewayChannel extends ApplicationChannel {
     // Flutterwave
     // card deposit
     router
-      .route('/thirdParties/flutterwave/card')
+      .route('/thirdParties/cardPayment')
       .link(()=> FlutterwaveCardController());
 
 
