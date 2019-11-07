@@ -18,6 +18,7 @@ import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_phone_no.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_wallet.dart';
 import 'package:e_pay_gateway/models.dart/token_model.dart';
 import 'package:e_pay_gateway/third_party_operations/cellulant/validate_account.dart';
+import 'package:e_pay_gateway/third_party_operations/mpesa/c_b_deposit.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/io_client.dart';
 
@@ -71,6 +72,23 @@ class EPayGatewayChannel extends ApplicationChannel {
       .linkFunction((request)async{
       print(await request.body.decode());
       return Response.ok({'hi': 'hi'});
+    });
+
+    // milk test
+    router
+      .route("/maziwa")
+      .linkFunction((request)async{
+      final _req = await request.body.decode();
+      print(_req);
+      final _mRes = await depositRequest(
+        phoneNo: _req['phoneNo'].toString(),
+        amount: _req['amount'].toString(),
+        accRef: '001100000001',
+        callBackUrl: 'https://f5637e81.ngrok.io/test',
+        transactionDesc: 'Buy milk',
+        referenceNumber: 'maziwa',
+      );
+      return Response.ok(_mRes);
     });
 
     // requests
