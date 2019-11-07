@@ -1,5 +1,6 @@
 import 'package:e_pay_gateway/models.dart/wallets/wallet_model.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
+import 'package:password/password.dart';
 
 class AccountModel{
 
@@ -27,11 +28,13 @@ class AccountModel{
 
   final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'accounts');
 
-  // TODO: save
+  // save
   Future<Map<String, dynamic>> save()async{
 
-    // TODO: hash password
-    ObjectId _id = ObjectId();
+    // hash password
+    final String _hash = Password.hash(password, PBKDF2());
+
+    final ObjectId _id = ObjectId();
 
     await _databaseBridge.insert({
       '_id': _id,
@@ -39,6 +42,7 @@ class AccountModel{
       'identifierType': _identifierType,
       'accountType': _accountType,
       'username': username,
+      'password': _hash,
       'address': {
         'phoneNo': phoneNo,
         'email': email,
@@ -119,6 +123,10 @@ class AccountModel{
       default:
         return 'Undefiened';
     }
+  }
+
+  bool verifyPassword(String password, String hash){
+    return Password.verify(password, hash);
   }
 
 

@@ -1,3 +1,4 @@
+import 'package:e_pay_gateway/controllers/accounts/accounts_Login_controller.dart';
 import 'package:e_pay_gateway/controllers/accounts/consumer_account_controller.dart';
 import 'package:e_pay_gateway/controllers/accounts/merchant_account_controllewr.dart';
 import 'package:e_pay_gateway/controllers/company/auth.dart';
@@ -92,6 +93,11 @@ class EPayGatewayChannel extends ApplicationChannel {
       .route("accounts/merchant/[:accountId]")
       .link(() => Authorizer.bearer(BearerAouthVerifier()))
     .link(() => MerchantAccountController());
+    // Login
+    router
+      .route('/accounts/login')
+      .link(() => Authorizer.basic(AccountLoginIdentifier()))
+      .link(() => AccountsLoginController());
 
     // Cellulant
     router
