@@ -222,7 +222,7 @@ class EPayGatewayChannel extends ApplicationChannel {
     // Responses
     // callback
     router
-      .route("mpesaResponces/cb/[:requestId]")
+      .route("mResponces/cb/[:requestId]")
       .link(() => MpesaStkCallbackController());
     // get all responses
     router
