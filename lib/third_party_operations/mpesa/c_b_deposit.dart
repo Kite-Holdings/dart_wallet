@@ -13,6 +13,7 @@ Future depositRequest({
   String callBackUrl,
   String referenceNumber,
   String transactionDesc,
+  String optinalCallback,
   })async{
 
 
@@ -49,10 +50,11 @@ Future depositRequest({
     "PartyA": phoneNo,
     "PartyB": businessShortCode,
     "PhoneNumber": phoneNo,
-    "CallBackURL": '${callBackURL}/cb/$_objIdStr',
+    "CallBackURL": optinalCallback == null ? '${callBackURL}/cb/$_objIdStr': optinalCallback,
     "AccountReference": referenceNumber != null ? referenceNumber : accRef,
     "TransactionDesc": transactionDesc
   };
+
 
   final Map<String, String> headers = {
       'content-type': 'application/json',

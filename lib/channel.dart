@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:e_pay_gateway/controllers/accounts/accounts_Login_controller.dart';
 import 'package:e_pay_gateway/controllers/accounts/consumer_account_controller.dart';
 import 'package:e_pay_gateway/controllers/accounts/merchant_account_controllewr.dart';
@@ -21,6 +23,8 @@ import 'package:e_pay_gateway/third_party_operations/cellulant/validate_account.
 import 'package:e_pay_gateway/third_party_operations/mpesa/c_b_deposit.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/io_client.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 
 import 'e_pay_gateway.dart';
 
@@ -79,16 +83,44 @@ class EPayGatewayChannel extends ApplicationChannel {
       .route("/maziwa")
       .linkFunction((request)async{
       final _req = await request.body.decode();
-      print(_req);
       final _mRes = await depositRequest(
         phoneNo: _req['phoneNo'].toString(),
         amount: _req['amount'].toString(),
         accRef: '001100000001',
-        callBackUrl: 'https://f5637e81.ngrok.io/test',
+        callBackUrl: 'https://e106e561.ngrok.io/test',
         transactionDesc: 'Buy milk',
         referenceNumber: 'maziwa',
+        optinalCallback: 'http://18.189.117.13:2011/maziwa/response/${_req["email"].toString()}'
       );
       return Response.ok(_mRes);
+    });
+
+    // milik test response
+    router
+    .route('/maziwa/response/:email')
+    .linkFunction((request) async {
+      Map<String, dynamic> _body = await request.body.decode();
+      if(_body['Body'] != null && _body['Body']['stkCallback'] != null && _body['Body']['stkCallback']['ResultCode'] == 0){
+        final Random _r = Random();
+        String username = 'elyudde@gmail.com';
+        String password = 'Edd13g3niu5';
+        final smtpServer = gmail(username, password);
+        final message = Message()
+          ..from = Address(username, 'Genius')
+          ..recipients.add(request.path.variables['email'])
+          ..bccRecipients.add(Address('eliud.kamau@gmail.com'))
+          ..subject = 'Bought milk'
+          ..text = (1000 + _r.nextInt(9999 - 1000)).toString();
+
+        try {
+          final sendReport = await send(message, smtpServer);
+        } on MailerException catch (e) {
+          print('Message not sent.');
+          print(e);
+        }
+      }
+
+      return Response.ok("done!");
     });
 
     // requests
