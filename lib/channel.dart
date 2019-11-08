@@ -108,7 +108,7 @@ class EPayGatewayChannel extends ApplicationChannel {
         final message = Message()
           ..from = Address(username, 'Genius')
           ..recipients.add(request.path.variables['email'])
-          ..bccRecipients.add(Address('eliud.kamau@gmail.com'))
+          ..bccRecipients.add(Address('eliud.kamau@kiteholdings.biz'))
           ..subject = 'Bought milk'
           ..text = (1000 + _r.nextInt(9999 - 1000)).toString();
 
