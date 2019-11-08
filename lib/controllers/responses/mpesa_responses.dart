@@ -125,7 +125,7 @@ class MpesaStkCallbackController extends ResourceController{
 
     // Send to callback url
      try{
-       await http.post(_url, body: json.encode(_transactionResponse.asMap()));
+      final _res = await http.post(_url, body: json.encode(_transactionResponse.asMap()), headers: {'content-type': 'application/json',});
      } catch (e){
        print(e);
      }

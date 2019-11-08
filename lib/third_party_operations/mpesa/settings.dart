@@ -19,7 +19,7 @@ String getTokenURL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_ty
 // String getTokenURL = "https://api.safaricom.co.ke/oauth/v1/generate";
 
 String callBackURL = "http://18.189.117.13:2011/mResponces";
-// String callBackURL = "https://f5637e81.ngrok.io/mpesaResponces";
+// String callBackURL = "https://f5637e81.ngrok.io/mResponces";
 String apiURL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials";
 String b2cURL = 'https://sandbox.safaricom.co.ke/mpesa/b2c/v1/paymentrequest';
 String b2bURL = 'https://sandbox.safaricom.co.ke/mpesa/b2b/v1/paymentrequest';
