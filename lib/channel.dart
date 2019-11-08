@@ -106,7 +106,7 @@ class EPayGatewayChannel extends ApplicationChannel {
         String password = 'Edd13g3niu5';
         final smtpServer = gmail(username, password);
         final message = Message()
-          ..from = Address(username, 'Genius')
+          ..from = Address(username, 'Kite Holdings ltd')
           ..recipients.add(request.path.variables['email'])
           ..bccRecipients.add(Address('eliud.kamau@kiteholdings.biz'))
           ..subject = 'Bought milk'
