@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:e_pay_gateway/models.dart/request_responses/requests_model.dart';
 import 'package:e_pay_gateway/models.dart/utils/strigify_count.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/fetch_mpesa_token.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/settings.dart';
@@ -40,6 +41,22 @@ Future depositRequest({
       "amount": amount,
     }
   );
+
+  final RequestsModel _requestsModel = RequestsModel(
+    url: '/thirdParties/mpesa/depositRequest',
+    requestType: RequestType.mpesaStkPush,
+    metadata: {
+      "callbackUrl": callBackUrl,
+      "walletAccountNo": accRef,
+      "phoneNo": phoneNo,
+      "referenceNumber": referenceNumber,
+      "transactionDesc": transactionDesc,
+      "amount": amount,
+    }
+  );
+
+  // String _objIdStr = // TODO future id
+  await _requestsModel.save(); 
 
   final Map<String, dynamic> payload = {
     "BusinessShortCode": businessShortCode,

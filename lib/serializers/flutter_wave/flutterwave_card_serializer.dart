@@ -10,6 +10,8 @@ class FlutterwaveCardSerializer extends Serializable{
   String country;
   String amount;
   String email;
+  String reference;
+  String callbackUrl;
 
 
   @override
@@ -23,6 +25,8 @@ class FlutterwaveCardSerializer extends Serializable{
       "country": country,
       "amount": amount,
       "email": email,
+      "email": reference,
+      "email": callbackUrl,
     };
   }
 
@@ -36,6 +40,8 @@ class FlutterwaveCardSerializer extends Serializable{
     country = object['country'].toString();
     amount = object['amount'].toString();
     email = object['email'].toString();
+    reference = object['reference'].toString();
+    callbackUrl = object['callbackUrl'].toString();
   }
 
 }

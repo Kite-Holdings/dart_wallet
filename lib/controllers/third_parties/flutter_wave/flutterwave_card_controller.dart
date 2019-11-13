@@ -5,7 +5,6 @@ import 'package:e_pay_gateway/third_party_operations/flutter_wave/card_transacti
 class FlutterwaveCardController extends ResourceController{
   @Operation.post()
   Future<Response> cardTransact(@Bind.body() FlutterwaveCardSerializer _flutterwaveCardSerializer)async{
-      print('_flutterwaveCardSerializer');
     final FlutterWaveCardDeposit _flutterwaveCard = FlutterWaveCardDeposit(
       cardNo: _flutterwaveCardSerializer.cardNo,
       cvv: _flutterwaveCardSerializer.cvv,
@@ -14,7 +13,9 @@ class FlutterwaveCardController extends ResourceController{
       currency: _flutterwaveCardSerializer.currency,
       country: _flutterwaveCardSerializer.country,
       amount: _flutterwaveCardSerializer.amount,
-      email: _flutterwaveCardSerializer.amount,
+      email: _flutterwaveCardSerializer.email,
+      reference: _flutterwaveCardSerializer.reference,
+      callbackUrl: _flutterwaveCardSerializer.callbackUrl,
     );
 
     final _response = await _flutterwaveCard.flutterWaveCardTransact();

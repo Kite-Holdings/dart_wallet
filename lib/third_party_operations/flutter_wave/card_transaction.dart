@@ -1,8 +1,8 @@
 import 'dart:convert';
 
+import 'package:e_pay_gateway/models.dart/request_responses/requests_model.dart';
 import 'package:e_pay_gateway/third_party_operations/flutter_wave/encryp.dart';
 import 'package:e_pay_gateway/third_party_operations/flutter_wave/settings.dart';
-import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/http.dart' as http;
 
 class FlutterWaveCardDeposit{
@@ -16,6 +16,8 @@ class FlutterWaveCardDeposit{
     this.country = 'KE',
     this.amount,
     this.email,
+    this.reference,
+    this.callbackUrl,
   });
 
   final String cardNo;
@@ -26,6 +28,8 @@ class FlutterWaveCardDeposit{
   final String country;
   final String amount;
   final String email;
+  final String reference;
+  final String callbackUrl;
 
   final String _publicKey = flutterWavePubKey;
   final String _secretKey = flutterWaveSecurityKey;
@@ -33,8 +37,24 @@ class FlutterWaveCardDeposit{
   String redirectUrl = flutterWaveCardredirect;
 
   Future flutterWaveCardTransact() async{
-    ObjectId _objId = ObjectId();
-    txRef = _objId.toString().split('"')[1];
+    final RequestsModel _requestsModel = RequestsModel(
+      url: '/thirdParties/cardPayment',
+      requestType: RequestType.card,
+      metadata: {
+        'amount': amount,
+        'cardNo': cardNo,
+        'email': email,
+        'currency': currency,
+        'country': country,
+        'reference': reference,
+        'callbackUrl': callbackUrl 
+      }
+    );
+
+    final String _id = await _requestsModel.save();
+
+
+    txRef = _id;
     final Map<String, dynamic> _data = {
       "PBFPubKey": _publicKey,
       "cardno": cardNo,
@@ -63,8 +83,9 @@ class FlutterWaveCardDeposit{
     };
 
     final http.Response _flutterWaveRes = await http.post(url, headers: headers, body: json.encode(_payload));
-    
-    return json.decode(_flutterWaveRes.body);
+    final _cardRes = json.decode(_flutterWaveRes.body);
+    _cardRes['reqRef'] = _id;
+    return _cardRes;
 
 
   }

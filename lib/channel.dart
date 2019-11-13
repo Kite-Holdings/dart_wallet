@@ -8,6 +8,7 @@ import 'package:e_pay_gateway/controllers/company/auth.dart';
 import 'package:e_pay_gateway/controllers/company/company_controller.dart';
 import 'package:e_pay_gateway/controllers/company/token_controller.dart';
 import 'package:e_pay_gateway/controllers/responses/fetch_mpesa_responses.dart';
+import 'package:e_pay_gateway/controllers/responses/flutterwave_response_controller.dart';
 import 'package:e_pay_gateway/controllers/responses/mpesa_responses.dart';
 import 'package:e_pay_gateway/controllers/third_parties/coop_controllers/coop_controllers.dart';
 import 'package:e_pay_gateway/controllers/third_parties/flutter_wave/flutterwave_card_controller.dart';
@@ -233,8 +234,13 @@ class EPayGatewayChannel extends ApplicationChannel {
     // Responses
     // callback
     router
-      .route("mResponces/cb/[:requestId]")
+      .route("/mResponces/cb/[:requestId]")
       .link(() => MpesaStkCallbackController());
+    router
+      .route("/flutterWaveResponse")
+      .link(()=> FlutterWaveResponseController());
+
+
     // get all responses
     router
       .route("/mpesaResponces")

@@ -18,7 +18,6 @@ class MpesaResponsesModel{
 
   Future<Map<String, dynamic>> findAll() async {
     final Map<String, dynamic> _data = await _databaseBridge.findBy();
-
     return _data;
   }
 

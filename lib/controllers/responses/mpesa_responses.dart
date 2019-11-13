@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:e_pay_gateway/models.dart/mpesa%20models/mpesa_responses_model.dart';
+import 'package:e_pay_gateway/models.dart/request_responses/requests_model.dart';
 import 'package:e_pay_gateway/models.dart/request_responses/transaction_response.dart';
 import 'package:e_pay_gateway/models.dart/transaction_model.dart';
 import 'package:e_pay_gateway/models.dart/wallets/wallet_model.dart';
@@ -16,7 +17,7 @@ class MpesaStkCallbackController extends ResourceController{
     _body['flag'] = "unprocessed";
     _body['type'] = "stkPush";
 
-    MpesaResponsesModel _mpesaResponsesModel = MpesaResponsesModel(body: _body);
+    final MpesaResponsesModel _mpesaResponsesModel = MpesaResponsesModel(body: _body);
     _mpesaResponsesModel.save();
 
     return Response.ok({"message": "done"});
@@ -24,8 +25,9 @@ class MpesaStkCallbackController extends ResourceController{
 
   @Operation.post('requestId')
   Future<Response> stkCallback(@Bind.path("requestId") String requestId)async{
-    Map<String, dynamic> _body = await request.body.decode();
-    DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'mpesaCallbackUrls');
+    final Map<String, dynamic> _body = await request.body.decode();
+
+    final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'mpesaCallbackUrls');
     final Map<String, dynamic> _transactionMeta = await _databaseBridge.findOneBy(where.id(ObjectId.parse(requestId)));
     final String walletAccountNo = _transactionMeta['walletAccountNo'].toString();
     final String referenceNumber = _transactionMeta['referenceNumber'].toString();
@@ -33,6 +35,18 @@ class MpesaStkCallbackController extends ResourceController{
     final String phoneNo = _transactionMeta['phoneNo'].toString();
     final double amount = double.parse(_transactionMeta['amount'].toString());
     final String _url = _transactionMeta['url'].toString();
+
+    // Future data  TODO: 
+    // final RequestsModel _requestsModel = RequestsModel();
+    // final Map<String, dynamic> _transactionMeta = await _requestsModel.getById(ObjectId.parse(requestId));
+    // final String walletAccountNo = _transactionMeta['metadata']['walletAccountNo'].toString();
+    // final String referenceNumber = _transactionMeta['metadata']['referenceNumber'].toString();
+    // final String transactionDesc = _transactionMeta['metadata']['transactionDesc'].toString();
+    // final String phoneNo = _transactionMeta['metadata']['phoneNo'].toString();
+    // final double amount = double.parse(_transactionMeta['metadata']['amount'].toString());
+    // final String _url = _transactionMeta['metadata']['calbackUrl'].toString();
+
+
     _body['flag'] = "unprocessed";
     _body['type'] = "stkPush";
     _body['walletAccountNo'] = walletAccountNo;
@@ -125,7 +139,8 @@ class MpesaStkCallbackController extends ResourceController{
 
     // Send to callback url
      try{
-      final _res = await http.post(_url, body: json.encode(_transactionResponse.asMap()), headers: {'content-type': 'application/json',});
+      // final dynamic _res = 
+      await http.post(_url, body: json.encode(_transactionResponse.asMap()), headers: {'content-type': 'application/json',});
      } catch (e){
        print(e);
      }
