@@ -39,7 +39,6 @@ class AccountLoginIdentifier extends AuthValidator {
     await db.open();
     final Map<String, dynamic> _account = await _accounts.findOne(where.eq("address.email", _aouthDetails[0]));
     await db.close();
-    print(_account);
     if(_account == null) {
       return null;
       }

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:e_pay_gateway/controllers/accounts/account_controller.dart';
 import 'package:e_pay_gateway/controllers/accounts/accounts_Login_controller.dart';
 import 'package:e_pay_gateway/controllers/accounts/consumer_account_controller.dart';
 import 'package:e_pay_gateway/controllers/accounts/merchant_account_controllewr.dart';
@@ -148,6 +149,11 @@ class EPayGatewayChannel extends ApplicationChannel {
       .route('/accounts/login')
       .link(() => Authorizer.basic(AccountLoginIdentifier()))
       .link(() => AccountsLoginController());
+
+    router
+      .route('/account')
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
+      .link(()=> AccountController());
 
     // Cellulant
     router

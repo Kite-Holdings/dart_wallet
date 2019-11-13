@@ -63,7 +63,7 @@ class DatabaseBridge{
   // Find one
   Future<Map<String, dynamic>> findOneBy(SelectorBuilder selector) async {
     await _db.open();
-    Map<String, dynamic> _m =await _dbCollection.findOne(selector);
+    final Map<String, dynamic> _m =await _dbCollection.findOne(selector, );
     await _db.close();
     return _m;
     // return _findOpertations(selector, OpertationType.findOne);
