@@ -125,11 +125,23 @@ class EPayGatewayChannel extends ApplicationChannel {
       return Response.ok("done!");
     });
 
-    // requests
+    // report
     router
       .route("/requestM")
       .linkFunction((request)async{
         DatabaseBridge _dbb = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'mpesaCallbackUrls');
+        Map<String, dynamic> _map = await _dbb.find();
+        final _newmap = _map['body'].map((item){
+          final ObjectId _id = ObjectId.parse(item['_id'].toString().split('"')[1]);
+          item['date'] = _id.dateTime.toString();
+          return item;
+        }).toList();
+      return Response.ok(_newmap);
+    });
+    router
+      .route("/requests")
+      .linkFunction((request)async{
+        DatabaseBridge _dbb = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'allRequests');
         Map<String, dynamic> _map = await _dbb.find();
         final _newmap = _map['body'].map((item){
           final ObjectId _id = ObjectId.parse(item['_id'].toString().split('"')[1]);
