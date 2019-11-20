@@ -9,7 +9,15 @@ class CompaniesController extends ResourceController{
     final Map<String, dynamic> _res = await companies.getAll();
 
     if (_res['status'] == '0'){
-      return Response.ok(_res['data']);
+      List<Map<String, dynamic>> _newLst = [];
+      final _data = _res['data'].map((item){
+        CompanyModel _companyModel = companies.fromMap(item);
+        Map<String, dynamic> _map = _companyModel.asMap();
+        _map['_id'] = item['_id'];
+        _newLst.add(_map);
+        return _newLst;
+      }).toList();
+      return Response.ok(_data);
     }
     else {
       return Response.serverError();

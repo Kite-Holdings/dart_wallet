@@ -29,8 +29,20 @@ class CompanyModel{
       'code': code,
       'consumerKey': consumerKey,
       'secretKey': secretKey,
-      'dateCreated': dateCreated,
+      'dateCreated': dateCreated.toString(),
     };
+  }
+
+  CompanyModel fromMap(dynamic data){
+    final String _date = data['dateCreated'].toString();
+    return CompanyModel(
+      name: data['name'].toString(),
+      code: data['code'].toString(),
+      consumerKey: data['consumerKey'].toString(),
+      secretKey: data['secretKey'].toString(),
+      walletRef: data['walletRef'].toString(),
+      dateCreated: _date == 'null' ? null : DateTime.parse(_date),
+    );
   }
 
   final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'companies');
