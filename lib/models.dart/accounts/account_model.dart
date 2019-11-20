@@ -104,14 +104,16 @@ class AccountModel{
   Future<Map<String, dynamic>> findById(ObjectId id)async{
     final Map<String, dynamic> account = await _databaseBridge.findOneBy(where.id(id).excludeFields(['_id', 'password']));
     final _walletsId = account['wallets'];
-    List<Map<String, dynamic>> _wallets = [];
     final DatabaseBridge _walletDatabaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'wallets');
     
-    _walletsId.forEach((itemId)async{
-      ObjectId _id = ObjectId.parse(itemId.toString().split('/').last);
-      final Map<String, dynamic> _wallet = await _walletDatabaseBridge.findOneBy(where.id(_id)); 
-      _wallets.add(_wallet);
+    final List _ids = [];
+    _walletsId.forEach((itemId){
+      final ObjectId _id = ObjectId.parse(itemId.toString().split('/').last);
+      _ids.add(_id);
     });
+    final Map<String, dynamic> _walletsMap = await _walletDatabaseBridge.findBy(where.all('_id', _ids).fields(['balance', 'walletAccountNo']).excludeFields(['_id']));
+    final _wallets = _walletsMap['body'];
+
     account['wallets'] = _wallets;
     return account;
   }
