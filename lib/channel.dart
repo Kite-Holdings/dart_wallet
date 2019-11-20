@@ -79,6 +79,13 @@ class EPayGatewayChannel extends ApplicationChannel {
       print(await request.body.decode());
       return Response.ok({'hi': 'hi'});
     });
+    // test
+    router
+      .route("/success")
+      .linkFunction((request)async{
+      print(await request.body.decode());
+      return Response.ok({"message": "done!"});
+    });
 
     // milk test
     router

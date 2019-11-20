@@ -16,8 +16,7 @@ class FlutterWaveResponseController  extends ResourceController{
 
     final String _requestId = _body['txRef'].toString();
     final String _recieptNo = _body['flwRef'].toString();
-
-
+    
     final ObjectId _id = ObjectId.parse(_body['txRef'].toString());
     final RequestsModel _requestModel = RequestsModel();
     final Map<String, dynamic> _data = await _requestModel.getById(_id);
