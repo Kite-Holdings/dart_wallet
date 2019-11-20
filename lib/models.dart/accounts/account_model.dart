@@ -70,10 +70,10 @@ class AccountModel{
         'phoneNo': phoneNo,
         'email': email,
       },
-      'wallet': {
+      'wallets': [{
         'balance': newWallet['balance'],
         'walletAccountNo': newWallet['walletAccountNo']
-      },
+      }],
     };
 
   }
