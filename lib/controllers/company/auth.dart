@@ -44,6 +44,8 @@ class AccountLoginIdentifier extends AuthValidator {
       }
     if (_accountModel.verifyPassword(_aouthDetails[1], _account['password'].toString())) {
       return Authorization(_account['_id'].toString().split('\"')[1], 0, this, );
+    } else {
+      return null;
     }
 
     return Authorization(_account['_id'].toString().split('\"')[1], 0, this, );
@@ -52,7 +54,7 @@ class AccountLoginIdentifier extends AuthValidator {
   
 }
 
-class BearerAouthVerifier extends AuthValidator{
+class                                                                                           BearerAouthVerifier extends AuthValidator{
   @override
   FutureOr<Authorization> validate<T>(AuthorizationParser<T> parser, T authorizationData, {List<AuthScope> requiredScope}) async {
     String _token = authorizationData.toString();
