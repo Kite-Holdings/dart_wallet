@@ -53,7 +53,7 @@ class FlutterWaveCardDeposit{
       final Map<String, dynamic> _company = await _companyModel.findById(uid);
       _client = _company['data']['name'].toString();
     } else {
-      _client = _account['email'].toString();
+      _client = _account['address']['email'].toString();
     }
 
     final RequestsModel _requestsModel = RequestsModel(

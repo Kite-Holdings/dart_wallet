@@ -17,7 +17,7 @@ class AccountsLoginController extends ResourceController{
     final RequestsModel _requestsModel = RequestsModel(
       url: '/accounts/login',
       requestType: RequestType.token,
-      account: _account['email'].toString(),
+      account: _account['address']['email'].toString(),
       metadata: {
         'clientId': request.authorization.clientID,
         'entity': 'user'
