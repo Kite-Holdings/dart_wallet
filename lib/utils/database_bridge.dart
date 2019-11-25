@@ -94,7 +94,7 @@ class DatabaseBridge{
     try{
       switch (opertationType) {
         case OpertationType.save:
-          _response['body'] = await _dbCollection.save(obj);
+          _response['body'] = await _dbCollection.insert(obj);
           break;
         case OpertationType.insert:
           _response['body'] = await _dbCollection.insert(obj);

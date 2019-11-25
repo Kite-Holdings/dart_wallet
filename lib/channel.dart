@@ -20,7 +20,6 @@ import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_buy_goods_services
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_paybill.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_phone_no.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_wallet.dart';
-import 'package:e_pay_gateway/models.dart/token_model.dart';
 import 'package:e_pay_gateway/third_party_operations/cellulant/validate_account.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/c_b_deposit.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';

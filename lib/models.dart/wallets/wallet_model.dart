@@ -37,18 +37,17 @@ class WalletModel{
     balance = 0;
 
     try{
-        await _databaseBridge.insert({
+        print(await _databaseBridge.insert({
           'balance': balance,
           'accountRef': accountRef,
           'walletAccountNo': walletAccountNo
-        });
+        }));
     } catch (e){
-
+      print(e);
     }
     Map<String, dynamic> wallet;
     try{
         wallet = await _databaseBridge.findOneBy(where.eq('walletAccountNo', walletAccountNo));
-
     } catch (e){
     }    
     if(wallet != null){

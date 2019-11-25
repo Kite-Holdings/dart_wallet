@@ -5,11 +5,13 @@ class RequestsModel{
   RequestsModel({
     this.url,
     this.requestType,
+    this.account,
     this.metadata
   });
 
   final String url;
   final RequestType requestType;
+  final String account;
   final dynamic metadata;
 
   final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'allRequests');
@@ -19,6 +21,7 @@ class RequestsModel{
     return{
       "url": url,
       "requestType": _stringRequestType,
+      "account": account,
       "metadata": metadata,
     };
   }
@@ -26,6 +29,7 @@ class RequestsModel{
   RequestsModel fromMap(Map<String, dynamic> object){
     return RequestsModel(
       url: object['url'].toString(),
+      account: object['account'].toString(),
       requestType: _toRequestType(object['metadata'].toString()),
       metadata: object['metadata'],
     );
@@ -37,6 +41,7 @@ class RequestsModel{
     await _databaseBridge.save({
       '_id': _id,
       "url": url,
+      "account": account,
       "requestType": _stringRequestType(),
       "metadata": metadata,
     });
@@ -73,6 +78,9 @@ class RequestsModel{
       case RequestType.mpesaStkPush:
         return 'mpesaStkPush';
         break;
+      case RequestType.token:
+        return 'token';
+        break;
       default:
         return 'notDefined';
     }
@@ -86,6 +94,9 @@ class RequestsModel{
       case 'mpesaStkPush':
         return RequestType.mpesaStkPush;
         break;
+      case 'token':
+        return RequestType.token;
+        break;
       default:
         return RequestType.notDefined;
     }
@@ -93,7 +104,8 @@ class RequestsModel{
 }
 
 enum RequestType{
-  mpesaStkPush,
   card,
+  mpesaStkPush,
+  token,
   notDefined
 }

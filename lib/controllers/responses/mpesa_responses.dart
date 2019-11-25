@@ -2,12 +2,13 @@ import 'dart:convert';
 
 import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:e_pay_gateway/models.dart/mpesa%20models/mpesa_responses_model.dart';
-import 'package:e_pay_gateway/models.dart/request_responses/requests_model.dart';
+import 'package:e_pay_gateway/models.dart/request_responses/responses_model.dart';
 import 'package:e_pay_gateway/models.dart/request_responses/transaction_response.dart';
 import 'package:e_pay_gateway/models.dart/transaction_model.dart';
 import 'package:e_pay_gateway/models.dart/wallets/wallet_model.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/http.dart' as http;
+import 'package:pedantic/pedantic.dart';
 
 
 class MpesaStkCallbackController extends ResourceController{
@@ -141,8 +142,31 @@ class MpesaStkCallbackController extends ResourceController{
      try{
       // final dynamic _res = 
       await http.post(_url, body: json.encode(_transactionResponse.asMap()), headers: {'content-type': 'application/json',});
+
+      final ResponsesModel _responsesModel = ResponsesModel(
+        requestId: requestId,
+        responseType: ResposeType.callBack,
+        responseBody: {
+          'endpoint': _url,
+          'status': 'success',
+          'body': _transactionResponse.asMap()
+        }
+      );
+
+      unawaited(_responsesModel.save());
      } catch (e){
        print(e);
+       final ResponsesModel _responsesModel = ResponsesModel(
+        requestId: requestId,
+        responseType: ResposeType.callBack,
+        responseBody: {
+          'endpoint': _url,
+          'status': 'failed',
+          'body': e.toString()
+        }
+      );
+
+      unawaited(_responsesModel.save());
      }
     
 

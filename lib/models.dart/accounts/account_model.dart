@@ -56,7 +56,6 @@ class AccountModel{
       accountType: accountType == AccountType.consumer ? '0' : '1', 
       companyCode: companyCode
     );
-    print('past');
     final Map<String, dynamic> newWallet = await _walletModel.save();
     final String walletRef = newWallet['ref'].toString();
     await _databaseBridge.update(where.eq('_id', _id), modify.push('wallets', walletRef));
@@ -101,8 +100,8 @@ class AccountModel{
     return account;
   }
   // TODO: find by _id
-  Future<Map<String, dynamic>> findById(ObjectId id)async{
-    final Map<String, dynamic> account = await _databaseBridge.findOneBy(where.id(id).excludeFields(['_id', 'password']));
+  Future<Map<String, dynamic>> findById(String id)async{
+    final Map<String, dynamic> account = await _databaseBridge.findOneBy(where.id(ObjectId.parse(id)).excludeFields(['_id', 'password']));
     final _walletsId = account['wallets'];
     final DatabaseBridge _walletDatabaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'wallets');
     

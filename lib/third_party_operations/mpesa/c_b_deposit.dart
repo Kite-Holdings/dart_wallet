@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:e_pay_gateway/models.dart/request_responses/requests_model.dart';
+import 'package:e_pay_gateway/models.dart/request_responses/responses_model.dart';
 import 'package:e_pay_gateway/models.dart/utils/strigify_count.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/fetch_mpesa_token.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/settings.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/http.dart' as http;
+import 'package:pedantic/pedantic.dart';
 
 Future depositRequest({
   String phoneNo, 
@@ -45,6 +47,7 @@ Future depositRequest({
   final RequestsModel _requestsModel = RequestsModel(
     url: '/thirdParties/mpesa/depositRequest',
     requestType: RequestType.mpesaStkPush,
+    account: accRef,
     metadata: {
       "callbackUrl": callBackUrl,
       "walletAccountNo": accRef,
@@ -55,8 +58,7 @@ Future depositRequest({
     }
   );
 
-  // String _objIdStr = // TODO future id
-  await _requestsModel.save(); 
+  String _requestId = await _requestsModel.save(); 
 
   final Map<String, dynamic> payload = {
     "BusinessShortCode": businessShortCode,
@@ -83,6 +85,14 @@ Future depositRequest({
   final http.Response r = await http.post(url, headers: headers, body: json.encode(payload));
   final _mpesaRes = json.decode(r.body);
   _mpesaRes['reqRef'] = _objIdStr;
+
+  final ResponsesModel _responsesModel = ResponsesModel(
+    requestId: _requestId,
+    responseType: ResposeType.mpesaStkPush,
+    responseBody: _mpesaRes,
+  );
+
+  unawaited(_responsesModel.save());
 
   return _mpesaRes;
 

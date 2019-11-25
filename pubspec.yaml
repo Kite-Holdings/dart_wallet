@@ -7,6 +7,7 @@ environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
+  pedantic: ^1.8.0+1
   aqueduct: ^3.0.0
   mongo_dart: ^0.3.6
   random_string: ^1.1.0

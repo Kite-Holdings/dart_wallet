@@ -16,6 +16,7 @@ class FlutterwaveCardController extends ResourceController{
       email: _flutterwaveCardSerializer.email,
       reference: _flutterwaveCardSerializer.reference,
       callbackUrl: _flutterwaveCardSerializer.callbackUrl,
+      uid: request.authorization.clientID
     );
 
     final _response = await _flutterwaveCard.flutterWaveCardTransact();

@@ -3,7 +3,7 @@ import 'package:e_pay_gateway/utils/database_bridge.dart';
 class FlutterwaveResponseModel {
   FlutterwaveResponseModel({this.body});
 
-  final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'FlutterwaveResponses');
+  final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'flutterwaveResponses');
   final Map<String, dynamic> body;
 
   Future<String> save() async{

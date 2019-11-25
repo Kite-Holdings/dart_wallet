@@ -108,6 +108,17 @@ class CompanyModel{
     
   }
 
+  Future<Map<String, dynamic>> findById(String id)async{
+    
+    final Map<String, dynamic> _company = await _databaseBridge.findOneBy(where.id(ObjectId.parse(id)));
+    return {
+      "status": "0",
+      "data": _company
+    };
+
+    
+  }
+
   Future<Map<String, dynamic>> getAll()async{
     final Map<String, dynamic> _companiesMap = await _databaseBridge.find();
 

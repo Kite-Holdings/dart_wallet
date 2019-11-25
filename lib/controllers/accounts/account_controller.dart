@@ -6,9 +6,8 @@ import 'package:e_pay_gateway/utils/database_bridge.dart';
 class AccountController extends ResourceController{
   @Operation.get()
   Future<Response> getAccountDetails () async {
-    final ObjectId _objectId = ObjectId.parse(request.authorization.clientID);
     final AccountModel _accountModel = AccountModel();
-    final Map<String, dynamic> _account = await _accountModel.findById(_objectId);
+    final Map<String, dynamic> _account = await _accountModel.findById(request.authorization.clientID);
     return Response.ok(_account);
   }
   
