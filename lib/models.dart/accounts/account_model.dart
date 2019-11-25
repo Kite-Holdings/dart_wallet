@@ -102,18 +102,20 @@ class AccountModel{
   // TODO: find by _id
   Future<Map<String, dynamic>> findById(String id)async{
     final Map<String, dynamic> account = await _databaseBridge.findOneBy(where.id(ObjectId.parse(id)).excludeFields(['_id', 'password']));
-    final _walletsId = account['wallets'];
-    final DatabaseBridge _walletDatabaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'wallets');
-    
-    final List _ids = [];
-    _walletsId.forEach((itemId){
-      final ObjectId _id = ObjectId.parse(itemId.toString().split('/').last);
-      _ids.add(_id);
-    });
-    final Map<String, dynamic> _walletsMap = await _walletDatabaseBridge.findBy(where.all('_id', _ids).fields(['balance', 'walletAccountNo']).excludeFields(['_id']));
-    final _wallets = _walletsMap['body'];
+    if(account != null){
+      final _walletsId = account['wallets'];
+      final DatabaseBridge _walletDatabaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'wallets');
+      
+      final List _ids = [];
+      _walletsId.forEach((itemId){
+        final ObjectId _id = ObjectId.parse(itemId.toString().split('/').last);
+        _ids.add(_id);
+      });
+      final Map<String, dynamic> _walletsMap = await _walletDatabaseBridge.findBy(where.all('_id', _ids).fields(['balance', 'walletAccountNo']).excludeFields(['_id']));
+      final _wallets = _walletsMap['body'];
 
-    account['wallets'] = _wallets;
+      account['wallets'] = _wallets;
+    }
     return account;
   }
 
