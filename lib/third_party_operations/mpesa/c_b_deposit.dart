@@ -74,6 +74,8 @@ Future depositRequest({
     "TransactionDesc": transactionDesc
   };
 
+  print(payload);
+
 
   final Map<String, String> headers = {
       'content-type': 'application/json',
