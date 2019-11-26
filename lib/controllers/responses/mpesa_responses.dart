@@ -90,6 +90,8 @@ class MpesaStkCallbackController extends ResourceController{
 
 
 void processMpesaResponse({bool success, Map<String, dynamic> body, String requestId, String recieptNo})async{
+  final StkProcessModel _stkProcessModelP = StkProcessModel(requestId: requestId);
+  final bool _isPending = await _stkProcessModelP.isPending();
 
   String transactionId;
 
@@ -182,11 +184,9 @@ void processMpesaResponse({bool success, Map<String, dynamic> body, String reque
   );
   final TransactionResponse _transactionResponse = TransactionResponse(responseObj: _responseObj, transactionResult: _transactionResult);
     _transactionResponse.save();
+
   
-    // if stkprocess is pending 
-  final StkProcessModel _stkProcessModel = StkProcessModel(requestId: requestId);
-  if(await _stkProcessModel.isPending()){
-  
+  if(_isPending){
   // Send to callback url
     try{
     // final dynamic _res = 
@@ -219,5 +219,6 @@ void processMpesaResponse({bool success, Map<String, dynamic> body, String reque
     rethrow;
     }
   }
+  
 
 }
