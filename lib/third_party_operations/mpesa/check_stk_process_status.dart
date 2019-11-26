@@ -27,6 +27,7 @@ Future<void> checkStkProcessStatus() async {
         final StkPushQueryRequest _stkPushQueryRequest = StkPushQueryRequest(checkoutRequestID: checkoutRequestID);
 
         final Map<String, dynamic> _querRes = await _stkPushQueryRequest.process();
+        // print('........${_querRes.toString()}..........${_body[i]['checkoutRequestID'].toString()}');
         if(_querRes['status'] != 101){
 
           if(_querRes['status'] == 0){
@@ -55,6 +56,14 @@ Future<void> checkStkProcessStatus() async {
               } catch (e){
                 print("Error!!!!!!!!!");
                 print(e);
+              }
+            }
+          } else if(_querRes['status'] == 1){
+            if(_querRes['body']['errorMessage'] != null && _querRes['body']['errorMessage'] == 'The transaction is being processed'){
+              if(_diff > (_duration * 10)){
+                // update state to cancel
+                final StkProcessModel _stkProcessModel = StkProcessModel(checkoutRequestID: checkoutRequestID, processState: ProcessState.cancel);
+                _stkProcessModel.updateProcessStateByCheckoutRequestID();
               }
             }
           }

@@ -6,10 +6,14 @@ class ResponsesModel{
     this.requestId,
     this.responseType,
     this.responseBody,
+    this.statusCode,
+    this.statusMessage,
   });
 
   final String requestId;
   final ResposeType responseType;
+  final int statusCode;
+  final String statusMessage;
   final dynamic responseBody;
 
 
@@ -48,8 +52,8 @@ class ResponsesModel{
 
   Future<Map<String, dynamic>> getAll()async{
     final Map<String, dynamic> _res = await _databaseBridge.find();
-    var _body = _res['body'].map((item){
-      ObjectId _id = ObjectId.parse(item['_id'].toString().split('"')[1]);
+    final _body = _res['body'].map((item){
+      final ObjectId _id = ObjectId.parse(item['_id'].toString().split('"')[1]);
       item['date'] = _id.dateTime;
       return item;
     });

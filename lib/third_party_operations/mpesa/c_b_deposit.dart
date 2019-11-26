@@ -83,28 +83,33 @@ Future depositRequest({
   };
 
   final String url = c2bURL;
-
-  final http.Response r = await http.post(url, headers: headers, body: json.encode(payload));
-  dynamic _mpesaRes;
   try{
-  _mpesaRes = json.decode(r.body);
-  _mpesaRes['reqRef'] = _requestId;
-  }catch (e){
-    _mpesaRes = r.body.toString();
+    final http.Response r = await http.post(url, headers: headers, body: json.encode(payload));
+    dynamic _mpesaRes;
+    try{
+    _mpesaRes = json.decode(r.body);
+    _mpesaRes['reqRef'] = _requestId;
+    }catch (e){
+      _mpesaRes = r.body.toString();
+    }
+
+    final ResponsesModel _responsesModel = ResponsesModel(
+      requestId: _requestId,
+      responseType: ResposeType.mpesaStkPush,
+      responseBody: _mpesaRes,
+    );
+
+    unawaited(_responsesModel.save());
+
+    // Stkpush Process
+    final StkProcessModel _stkProcessModel = StkProcessModel(requestId: _requestId, processState: ProcessState.pending, checkoutRequestID: _mpesaRes['CheckoutRequestID'].toString());
+    _stkProcessModel.create();
+    return _mpesaRes;
+  } catch (e){
+    print(e);
+    return {'message': e.toString()};
   }
 
-  final ResponsesModel _responsesModel = ResponsesModel(
-    requestId: _requestId,
-    responseType: ResposeType.mpesaStkPush,
-    responseBody: _mpesaRes,
-  );
-
-  unawaited(_responsesModel.save());
-
-  // Stkpush Process
-  final StkProcessModel _stkProcessModel = StkProcessModel(requestId: _requestId, processState: ProcessState.pending, checkoutRequestID: _mpesaRes['CheckoutRequestID'].toString());
-  _stkProcessModel.create();
-
-  return _mpesaRes;
+  
 
 }

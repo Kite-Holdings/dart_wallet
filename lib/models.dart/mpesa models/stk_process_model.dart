@@ -48,12 +48,20 @@ class StkProcessModel{
     );
   }
 
+  Future<bool> isPending()async{
+    final Map _queryRes = await _databaseBridge.findOneBy(where.eq('requestId', requestId),);
+    return _queryRes['processState']== 'pending';
+  }
+
 
 
   String processStateValue(){
     switch (processState) {
       case ProcessState.pending:
         return 'pending';
+        break;
+      case ProcessState.cancel:
+        return 'cancel';
         break;
       case ProcessState.complete:
         return 'complete';
@@ -73,6 +81,7 @@ class StkProcessModel{
 
 enum ProcessState{
   pending,
+  cancel,
   complete,
   failed,
   terminated
