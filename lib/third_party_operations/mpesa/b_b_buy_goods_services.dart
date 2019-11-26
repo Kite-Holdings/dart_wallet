@@ -16,8 +16,8 @@ Future buyGoodsServices({String tillNo, String amount})async{
     "PartyA": businessShortCode,
     "PartyB": tillNo,
     "Remarks": "test",
-    "QueueTimeOutURL": callBackURL,
-    "ResultURL": callBackURL,
+    "QueueTimeOutURL": mpesaCallBackURL,
+    "ResultURL": mpesaCallBackURL,
     };
 
   final Map<String, String> headers = {

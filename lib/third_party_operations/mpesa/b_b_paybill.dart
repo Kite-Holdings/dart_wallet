@@ -16,14 +16,14 @@ Future payBill({String tillNo, String amount, String accRef})async{
     "PartyA": businessShortCode,
     "PartyB": tillNo,
     "Remarks": "test",
-    "QueueTimeOutURL": callBackURL,
-    "ResultURL": callBackURL,
+    "QueueTimeOutURL": mpesaCallBackURL,
+    "ResultURL": mpesaCallBackURL,
     "AccountReference": accRef
     };
 
   final Map<String, String> headers = {
       'content-type': 'application/json',
-      'Authorization': 'Bearer ' + accessToken
+      'Authorization': 'Bearer $accessToken'
   };
 
   final String url = b2bURL;

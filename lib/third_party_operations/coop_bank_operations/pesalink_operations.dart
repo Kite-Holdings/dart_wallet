@@ -38,7 +38,7 @@ class PesalinkOperations{
   Future get receive => _transact(sending: false);
 
   Future _transact({bool sending}) async{
-    callBackURL = coopCallbackUrl;
+    final String callBackURL = coopCallbackUrl;
     final String _accNumber = coopAccountNumber;
     final String _url = peaslinkUrl;
     final String _accessToken = await fetchCoopToken();

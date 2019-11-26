@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:e_pay_gateway/models.dart/mpesa%20models/stk_process_model.dart';
 import 'package:e_pay_gateway/models.dart/request_responses/requests_model.dart';
 import 'package:e_pay_gateway/models.dart/request_responses/responses_model.dart';
 import 'package:e_pay_gateway/models.dart/utils/strigify_count.dart';
@@ -69,7 +70,7 @@ Future depositRequest({
     "PartyA": phoneNo,
     "PartyB": businessShortCode,
     "PhoneNumber": phoneNo,
-    "CallBackURL": optinalCallback == null ? '${callBackURL}/cb/$_objIdStr': optinalCallback,
+    "CallBackURL": optinalCallback == null ? '${mpesaCallBackURL}/cb/$_objIdStr': optinalCallback,
     "AccountReference": referenceNumber != null ? referenceNumber : accRef,
     "TransactionDesc": transactionDesc
   };
@@ -77,7 +78,7 @@ Future depositRequest({
 
   final Map<String, String> headers = {
       'content-type': 'application/json',
-      'Authorization': 'Bearer ' + accessToken
+      'Authorization': 'Bearer $accessToken'
   };
 
   final String url = c2bURL;
@@ -93,6 +94,10 @@ Future depositRequest({
   );
 
   unawaited(_responsesModel.save());
+
+  // Stkpush Process
+  final StkProcessModel _stkProcessModel = StkProcessModel(requestId: _objIdStr, processState: ProcessState.pending, checkoutRequestID: _mpesaRes['CheckoutRequestID'].toString());
+  _stkProcessModel.create();
 
   return _mpesaRes;
 

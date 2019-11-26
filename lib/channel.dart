@@ -15,6 +15,7 @@ import 'package:e_pay_gateway/controllers/third_parties/flutter_wave/flutterwave
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/buy_goods_servisesController.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/deposit_request_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/paybill_controller.dart';
+import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/stk_push_query_request_controller.dart';
 import 'package:e_pay_gateway/controllers/third_parties/mpesa_controllers/transfer_to_phone_controller.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_buy_goods_services.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_paybill.dart';
@@ -22,6 +23,7 @@ import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_phone_no.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_wallet.dart';
 import 'package:e_pay_gateway/third_party_operations/cellulant/validate_account.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/c_b_deposit.dart';
+import 'package:e_pay_gateway/third_party_operations/mpesa/stkPushQueryRequest.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/io_client.dart';
 import 'package:mailer/mailer.dart';
@@ -260,6 +262,10 @@ class EPayGatewayChannel extends ApplicationChannel {
       .route("/thirdParties/mpesa/depositRequest")
       // .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(() => DepositRequestController());
+    // stkquerrequest
+    router
+      .route('//thirdParties/mpesa/stkQueryRequest')
+      .link(() => StkPushQueryRequestController());
 
     
     // Responses
