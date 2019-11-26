@@ -184,7 +184,7 @@ void processMpesaResponse({bool success, Map<String, dynamic> body, String reque
     _transactionResponse.save();
   
     // if stkprocess is pending 
-  final StkProcessModel _stkProcessModel = StkProcessModel(requestId: '5ddd1efcd6ef07b80622dbf6');
+  final StkProcessModel _stkProcessModel = StkProcessModel(requestId: requestId);
   if(await _stkProcessModel.isPending()){
   
   // Send to callback url
