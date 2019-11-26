@@ -11,5 +11,11 @@ Future main() async {
   await app.start(numberOfInstances: count > 0 ? count : 1);
   print("Application started on port: ${app.options.port}.");
   print("Use Ctrl-C (SIGINT) to stop running the application.");
-  checkStkProcessStatus();
+  int i = 0;
+  while(true){
+    i++;
+    // print('........................................$i');
+    await checkStkProcessStatus();
+    await Future.delayed(const Duration(seconds: 100));
+  }
 }

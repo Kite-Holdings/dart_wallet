@@ -39,25 +39,6 @@ class MpesaStkCallbackController extends ResourceController{
     // final double amount = double.parse(_transactionMeta['amount'].toString());
     // final String _url = _transactionMeta['url'].toString();
 
-    // Future data: 
-    final RequestsModel _requestsModel = RequestsModel();
-    final Map<String, dynamic> _transactionMeta = await _requestsModel.getById(ObjectId.parse(requestId));
-    final String walletAccountNo = _transactionMeta['metadata']['walletAccountNo'].toString();
-    final String referenceNumber = _transactionMeta['metadata']['referenceNumber'].toString();
-    final String transactionDesc = _transactionMeta['metadata']['transactionDesc'].toString();
-    final String phoneNo = _transactionMeta['metadata']['phoneNo'].toString();
-    final double amount = double.parse(_transactionMeta['metadata']['amount'].toString());
-    final String _url = _transactionMeta['metadata']['calbackUrl'].toString();
-
-
-    _body['flag'] = "unprocessed";
-    _body['type'] = "stkPush";
-    _body['walletAccountNo'] = walletAccountNo;
-    _body['referenceNumber'] = referenceNumber;
-    _body['transactionDesc'] = transactionDesc;
-    _body['amount'] = amount;
-
-    String _transactionId;
     String _recieptNo;
 
     bool _success = false;
@@ -67,14 +48,14 @@ class MpesaStkCallbackController extends ResourceController{
       _success = true;
       
       
-      Map<String, dynamic> _head = {};
+      final Map<String, dynamic> _head = {};
       // MerchantRequestID
       _head['MerchantRequestID'] = _body['Body']['stkCallback']['MerchantRequestID'];
       // CheckoutRequestID
       _head['CheckoutRequestID'] = _body['Body']['stkCallback']['CheckoutRequestID'];
 
       final _details = _body['Body']['stkCallback']['CallbackMetadata']['Item'];
-      Map<String, dynamic> _item = {};
+      final Map<String, dynamic> _item = {};
       for(int i = 0; i < int.parse(_details.length.toString()); i++){
         _item[_details[i]['Name'].toString()] = _details[i]['Value'];
 
@@ -92,93 +73,15 @@ class MpesaStkCallbackController extends ResourceController{
       
       _body['flag'] = "complete";
 
-      final MpesaResponsesModel _mpesaResponsesModel = MpesaResponsesModel(body: _body);
-      _transactionId = await _mpesaResponsesModel.save();
-      // deposit to wallet
-      final WalletModel _walletModel = WalletModel();
-      final Map<String, dynamic> _recipientInfo = await _walletModel.debit(amount: amount, accountNo: walletAccountNo);
 
-      // Update stkProcess
-      final StkProcessModel _stkProcessModel = StkProcessModel(requestId: requestId, processState: ProcessState.complete);
-      _stkProcessModel.updateProcessStateByRequestId();
     }
     else{
-
-      final MpesaResponsesModel _mpesaResponsesModel = MpesaResponsesModel(body: _body);
-      _transactionId = await _mpesaResponsesModel.save();
       _success = false;
 
-      // Update stkProcess
-      final StkProcessModel _stkProcessModel = StkProcessModel(requestId: requestId, processState: ProcessState.failed);
-      _stkProcessModel.updateProcessStateByRequestId();
     }
 
-    
-    // save transaction
-    final TransactionModel _transactionModel = TransactionModel(
-      senderInfo: _body,
-      recipientInfo: null,
-      companyCode: walletAccountNo.isNotEmpty ? walletAccountNo[0]+walletAccountNo[1]+walletAccountNo[2] : '000',
-      amount: amount,
-      cost: 0,
-      totalAmount: amount,
-      transactionType: TransactionType.mpesaToWallet,
-      state: TransactionState.complete
-    );
+    processMpesaResponse(success: _success, body: _body, requestId: requestId, recieptNo: _recieptNo);
 
-    await _transactionModel.save();
-
-    // Save response
-    final ResponseObj _responseObj = ResponseObj(_success ? "0" : "1", _success ? "Successfully Completed": "Failed");
-    final TransactionResult _transactionResult = TransactionResult(
-      resultStatus: _success ? 'Completed' : 'Failed',
-      reqRef: requestId,
-      transactionId: _transactionId.toString(),
-      channel: 'Mpesa',
-      paymentRef: referenceNumber != null ? referenceNumber : walletAccountNo,
-      receiptRef: _recieptNo.toString(), 
-      amount: _success ? amount.toString() : null,
-      charges: '0',
-      receiverParty: "Mpesa",
-      senderAccount: phoneNo,
-      receiptNo: _recieptNo.toString(),
-      completeDateTime: DateTime.now().toString(),
-      currentBalance: null,
-      availableBalance: null,
-    );
-    final TransactionResponse _transactionResponse = TransactionResponse(responseObj: _responseObj, transactionResult: _transactionResult);
-     _transactionResponse.save();
-
-    // Send to callback url
-     try{
-      // final dynamic _res = 
-      await http.post(_url, body: json.encode(_transactionResponse.asMap()), headers: {'content-type': 'application/json',});
-
-      final ResponsesModel _responsesModel = ResponsesModel(
-        requestId: requestId,
-        responseType: ResposeType.callBack,
-        responseBody: {
-          'endpoint': _url,
-          'status': 'success',
-          'body': _transactionResponse.asMap()
-        }
-      );
-
-      unawaited(_responsesModel.save());
-     } catch (e){
-       print(e);
-       final ResponsesModel _responsesModel = ResponsesModel(
-        requestId: requestId,
-        responseType: ResposeType.callBack,
-        responseBody: {
-          'endpoint': _url,
-          'status': 'failed',
-          'body': e.toString()
-        }
-      );
-
-      unawaited(_responsesModel.save());
-     }
     
 
     return Response.ok({"message": "done"});
@@ -193,12 +96,32 @@ void processMpesaResponse({bool success, Map<String, dynamic> body, String reque
 
 
   final Map<String, dynamic> _transactionMeta = await _requestsModel.getById(ObjectId.parse(requestId));
-  final String walletAccountNo = _transactionMeta['metadata']['walletAccountNo'].toString();
-  final String referenceNumber = _transactionMeta['metadata']['referenceNumber'].toString();
-  final String transactionDesc = _transactionMeta['metadata']['transactionDesc'].toString();
-  final String phoneNo = _transactionMeta['metadata']['phoneNo'].toString();
-  final double amount = double.parse(_transactionMeta['metadata']['amount'].toString());
-  final String _url = _transactionMeta['metadata']['calbackUrl'].toString();
+  String walletAccountNo;
+  String referenceNumber;
+  String transactionDesc;
+  String phoneNo;
+  double amount;
+  String _url;
+  try{
+  walletAccountNo = _transactionMeta['metadata']['walletAccountNo'].toString();
+  referenceNumber = _transactionMeta['metadata']['referenceNumber'].toString();
+  transactionDesc = _transactionMeta['metadata']['transactionDesc'].toString();
+  phoneNo = _transactionMeta['metadata']['phoneNo'].toString();
+  amount = double.parse(_transactionMeta['metadata']['amount'].toString());
+  _url = _transactionMeta['metadata']['callbackUrl'].toString();
+  } catch (e){
+    walletAccountNo = _transactionMeta['walletAccountNo'].toString();
+    referenceNumber = _transactionMeta['referenceNumber'].toString();
+    transactionDesc = _transactionMeta['transactionDesc'].toString();
+    phoneNo = _transactionMeta['phoneNo'].toString();
+    amount = double.parse(_transactionMeta['amount'].toString());
+    _url = _transactionMeta['url'].toString();
+  }
+
+  body['walletAccountNo'] = walletAccountNo;
+  body['referenceNumber'] = referenceNumber;
+  body['transactionDesc'] = transactionDesc;
+  body['amount'] = amount;
 
   if(success){
 
@@ -288,6 +211,7 @@ void processMpesaResponse({bool success, Map<String, dynamic> body, String reque
     );
 
     unawaited(_responsesModel.save());
+    rethrow;
     }
 
 }

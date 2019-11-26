@@ -25,11 +25,12 @@ Future depositRequest({
 
   var now = DateTime.now();
   String dt = now.year.toString() + stringifyCount(now.month, 2) + stringifyCount(now.day, 2) + stringifyCount(now.hour, 2) + stringifyCount(now.minute, 2) + stringifyCount(now.second, 2);
-  var str = businessShortCode + passkey + dt;
+  final str = businessShortCode + passkey + dt;
   
-  var bytes = utf8.encode(str);
-  var _password = base64.encode(bytes);
+  final bytes = utf8.encode(str);
+  final _password = base64.encode(bytes);
 
+  // final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'allRequests');
   DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'mpesaCallbackUrls');
   final ObjectId _objId = ObjectId();
   final String _objIdStr = _objId.toString().split('"')[1];
@@ -59,7 +60,7 @@ Future depositRequest({
     }
   );
 
-  String _requestId = await _requestsModel.save(); 
+  final String _requestId = await _requestsModel.save(); 
 
   final Map<String, dynamic> payload = {
     "BusinessShortCode": businessShortCode,
@@ -70,7 +71,7 @@ Future depositRequest({
     "PartyA": phoneNo,
     "PartyB": businessShortCode,
     "PhoneNumber": phoneNo,
-    "CallBackURL": optinalCallback == null ? '${mpesaCallBackURL}/cb/$_objIdStr': optinalCallback,
+    "CallBackURL": optinalCallback == null ? '${mpesaCallBackURL}/cb/$_requestId': optinalCallback,
     "AccountReference": referenceNumber != null ? referenceNumber : accRef,
     "TransactionDesc": transactionDesc
   };
@@ -84,8 +85,13 @@ Future depositRequest({
   final String url = c2bURL;
 
   final http.Response r = await http.post(url, headers: headers, body: json.encode(payload));
-  final _mpesaRes = json.decode(r.body);
-  _mpesaRes['reqRef'] = _objIdStr;
+  dynamic _mpesaRes;
+  try{
+  _mpesaRes = json.decode(r.body);
+  _mpesaRes['reqRef'] = _requestId;
+  }catch (e){
+    _mpesaRes = r.body.toString();
+  }
 
   final ResponsesModel _responsesModel = ResponsesModel(
     requestId: _requestId,
@@ -96,7 +102,7 @@ Future depositRequest({
   unawaited(_responsesModel.save());
 
   // Stkpush Process
-  final StkProcessModel _stkProcessModel = StkProcessModel(requestId: _objIdStr, processState: ProcessState.pending, checkoutRequestID: _mpesaRes['CheckoutRequestID'].toString());
+  final StkProcessModel _stkProcessModel = StkProcessModel(requestId: _requestId, processState: ProcessState.pending, checkoutRequestID: _mpesaRes['CheckoutRequestID'].toString());
   _stkProcessModel.create();
 
   return _mpesaRes;

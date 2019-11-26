@@ -77,6 +77,9 @@ class ResponsesModel{
       case ResposeType.mpesaStkPush:
         return 'mpesaStkPush';
         break;
+      case ResposeType.stkQuery:
+        return 'stkQuery';
+        break;
       case ResposeType.token:
         return 'token';
         break;
@@ -96,6 +99,9 @@ class ResponsesModel{
       case 'mpesaStkPush':
         return ResposeType.mpesaStkPush;
         break;
+      case 'stkQuery':
+        return ResposeType.stkQuery;
+        break;
       case 'token':
         return ResposeType.token;
         break;
@@ -109,6 +115,7 @@ enum ResposeType{
   callBack,
   card,
   mpesaStkPush,
+  stkQuery,
   token,
   notDefined
 }
