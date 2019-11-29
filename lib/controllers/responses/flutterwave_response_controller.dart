@@ -5,6 +5,7 @@ import 'package:e_pay_gateway/models.dart/flutterwave_models/flutterwave_respons
 import 'package:e_pay_gateway/models.dart/request_responses/requests_model.dart';
 import 'package:e_pay_gateway/models.dart/request_responses/responses_model.dart';
 import 'package:e_pay_gateway/models.dart/request_responses/transaction_response.dart';
+import 'package:e_pay_gateway/models.dart/wallets/wallet_model.dart';
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/http.dart' as http;
 import 'package:pedantic/pedantic.dart';
@@ -27,6 +28,13 @@ class FlutterWaveResponseController  extends ResourceController{
     final String amount = _data['metadata']['amount'].toString();
     final String cardNo = _data['metadata']['cardNo'].toString();
     final String _url = _data['metadata']['callbackUrl'].toString();
+
+    if(_data['transactionType'] != null && _data['transactionType'] == 'wallet'){
+      // deposit wallet
+      final WalletModel _walletModel = WalletModel();
+      unawaited(_walletModel.debit(amount: double.parse(amount), accountNo: reference));
+
+    }
 
     final ResponseObj _responseObj = ResponseObj('0', 'Successfully Completed');
     final TransactionResult _transactionResult = TransactionResult(

@@ -6,13 +6,15 @@ class RequestsModel{
     this.url,
     this.requestType,
     this.account,
-    this.metadata
+    this.transactionType,
+    this.metadata,
   });
 
   final String url;
   final RequestType requestType;
   final String account;
   final dynamic metadata;
+  final RequestTransactionType transactionType;
 
   final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'allRequests');
 
@@ -44,6 +46,7 @@ class RequestsModel{
       "account": account,
       "requestType": _stringRequestType(),
       "metadata": metadata,
+      "transactionType": _stringReqTransType,
     });
     return _id.toJson();
   }
@@ -66,7 +69,18 @@ class RequestsModel{
 
 
 
-
+String _stringReqTransType(){
+  switch (transactionType) {
+    case RequestTransactionType.normal:
+      return 'normal';
+      break;
+    case RequestTransactionType.wallet:
+      return 'wallet';
+      break;
+    default:
+      return 'normal';
+  }
+}
 
 
 
@@ -108,4 +122,9 @@ enum RequestType{
   mpesaStkPush,
   token,
   notDefined
+}
+
+enum RequestTransactionType{
+  normal,
+  wallet
 }

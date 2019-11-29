@@ -251,6 +251,11 @@ class EPayGatewayChannel extends ApplicationChannel {
       .route('/thirdParties/cardPayment')
       .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(()=> FlutterwaveCardController());
+    // wallet  card
+    router
+      .route('/thirdParties/cardToWallet')
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
+      .link(()=> FlutterwaveWalletCardController());
 
 
 

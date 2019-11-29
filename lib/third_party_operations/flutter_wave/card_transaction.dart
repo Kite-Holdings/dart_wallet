@@ -22,7 +22,8 @@ class FlutterWaveCardDeposit{
     this.email,
     this.reference,
     this.callbackUrl,
-    this.uid
+    this.uid,
+    this.requestTransactionType
   });
 
   final String cardNo;
@@ -36,6 +37,7 @@ class FlutterWaveCardDeposit{
   final String reference;
   final String callbackUrl;
   final String uid;
+  final RequestTransactionType requestTransactionType;
 
   final String _publicKey = flutterWavePubKey;
   final String _secretKey = flutterWaveSecurityKey;
@@ -60,6 +62,7 @@ class FlutterWaveCardDeposit{
       url: '/thirdParties/cardPayment',
       requestType: RequestType.card,
       account: _client,
+      transactionType: requestTransactionType,
       metadata: {
         'amount': amount,
         'cardNo': cardNo,
