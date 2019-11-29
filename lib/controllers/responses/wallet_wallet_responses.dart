@@ -65,10 +65,12 @@ class WalletWalletCallbackController{
     final TransactionResponse _transactionResponse = TransactionResponse(responseObj: _responseObj, transactionResult: _transactionResult);
     _transactionResponse.save();
     // Send to callback url
+    if(callbackUrl.toString() != null.toString()){
      try{
        await http.post(callbackUrl, body: json.encode(_transactionResponse.asMap()));
      } catch (e){
        print(e);
      }
+    }
   }
 }
