@@ -199,7 +199,8 @@ void processMpesaResponse({bool success, Map<String, dynamic> body, String reque
         'endpoint': _url,
         'status': 'success',
         'body': _transactionResponse.asMap()
-      }
+      },
+      status: ResponsesStatus.success
     );
 
     unawaited(_responsesModel.save());
@@ -212,7 +213,8 @@ void processMpesaResponse({bool success, Map<String, dynamic> body, String reque
         'endpoint': _url,
         'status': 'failed',
         'body': e.toString()
-      }
+      },
+      status: ResponsesStatus.success
     );
 
     unawaited(_responsesModel.save());

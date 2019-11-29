@@ -86,25 +86,48 @@ Future depositRequest({
   try{
     final http.Response r = await http.post(url, headers: headers, body: json.encode(payload));
     dynamic _mpesaRes;
+    final int _statusCode = r.statusCode;
     try{
     _mpesaRes = json.decode(r.body);
     _mpesaRes['reqRef'] = _requestId;
+
     }catch (e){
       _mpesaRes = r.body.toString();
+    }
+
+    ResponsesStatus _responsesStatus(){
+      switch (_statusCode) {
+        case 200:
+          return ResponsesStatus.success;
+          break;
+        case 400:
+          return ResponsesStatus.failed;
+          break;
+        case 500:
+          return ResponsesStatus.warning;
+          break;
+        default:
+        return ResponsesStatus.notDefined;
+      }
     }
 
     final ResponsesModel _responsesModel = ResponsesModel(
       requestId: _requestId,
       responseType: ResposeType.mpesaStkPush,
       responseBody: _mpesaRes,
+      status: _responsesStatus()
     );
+
 
     unawaited(_responsesModel.save());
 
     // Stkpush Process
     final StkProcessModel _stkProcessModel = StkProcessModel(requestId: _requestId, processState: ProcessState.pending, checkoutRequestID: _mpesaRes['CheckoutRequestID'].toString());
     _stkProcessModel.create();
-    return _mpesaRes;
+    return {
+      'body': _mpesaRes,
+      'statusCode': _statusCode
+    };
   } catch (e){
     print(e);
     return {'message': e.toString()};

@@ -1,7 +1,7 @@
 import 'package:e_pay_gateway/e_pay_gateway.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
-void AirtelEnrol() async {
+void airtelEnrol() async {
   String payload = 
   '''
   <COMMAND>

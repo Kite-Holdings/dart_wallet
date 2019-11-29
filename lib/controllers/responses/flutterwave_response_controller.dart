@@ -64,7 +64,8 @@ class FlutterWaveResponseController  extends ResourceController{
           'endpoint': _url,
           'status': 'success',
           'body': _transactionResponse.asMap()
-        }
+        },
+        status: ResponsesStatus.success
       );
 
       unawaited(_responsesModel.save());
@@ -78,7 +79,8 @@ class FlutterWaveResponseController  extends ResourceController{
           'endpoint': _url,
           'status': 'failed',
           'body': e.toString()
-        }
+        },
+        status: ResponsesStatus.failed
       );
 
       unawaited(_responsesModel.save());

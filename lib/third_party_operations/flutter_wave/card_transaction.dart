@@ -101,14 +101,15 @@ class FlutterWaveCardDeposit{
     final Map<String, String> headers = {
       'content-type': 'application/json',
     };
-
+    
     final http.Response _flutterWaveRes = await http.post(url, headers: headers, body: json.encode(_payload));
     final _cardRes = json.decode(_flutterWaveRes.body);
     _cardRes['reqRef'] = _id;
     final ResponsesModel _responsesModel = ResponsesModel(
       requestId: _id,
       responseType: ResposeType.card,
-      responseBody: _cardRes
+      responseBody: _cardRes,
+      status: ResponsesStatus.success
     );
 
     unawaited(_responsesModel.save());

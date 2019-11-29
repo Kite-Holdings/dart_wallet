@@ -21,6 +21,7 @@ import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_buy_goods_services
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_paybill.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_phone_no.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_wallet.dart';
+import 'package:e_pay_gateway/third_party_operations/airtel_kenya/enroll.dart';
 import 'package:e_pay_gateway/third_party_operations/cellulant/validate_account.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/c_b_deposit.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/stkPushQueryRequest.dart';
@@ -63,14 +64,9 @@ class EPayGatewayChannel extends ApplicationChannel {
 
     router
       .route("/")
-      // .link(() => Authorizer.bearer(BearerAouthVerifier()))
+      .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .linkFunction((request)async{
-        bool trustSelfSigned = true;
-  HttpClient httpClient = new HttpClient()
-    ..badCertificateCallback =
-        ((X509Certificate cert, String host, int port) => trustSelfSigned);
-  IOClient ioClient = new IOClient(httpClient);
-        await ioClient.get('https://api-sit.co-opbank.co.ke/store/');
+        
       return Response.ok({'hi': 'hi'});
     });
     // test
@@ -192,6 +188,19 @@ class EPayGatewayChannel extends ApplicationChannel {
       .route('/account')
       .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .link(()=> AccountController());
+
+
+
+    //////////////// Third parties ///////////////////
+    ///
+    
+    // Airtel
+    router
+      .route('/airtel')
+      .linkFunction((request){
+        airtelEnrol();
+        return Response.accepted();
+      });
 
     // Cellulant
     router

@@ -31,7 +31,8 @@ class AccountsLoginController extends ResourceController{
     final ResponsesModel _responsesModel = ResponsesModel(
       requestId: _reqId,
       responseType: ResposeType.token,
-      responseBody: _res
+      responseBody: _res,
+      status: ResponsesStatus.success
     );
 
     unawaited(_responsesModel.save());

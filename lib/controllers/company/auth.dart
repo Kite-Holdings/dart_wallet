@@ -48,13 +48,12 @@ class AccountLoginIdentifier extends AuthValidator {
       return null;
     }
 
-    return Authorization(_account['_id'].toString().split('\"')[1], 0, this, );
   }
     
   
 }
 
-class                                                                                           BearerAouthVerifier extends AuthValidator{
+class BearerAouthVerifier extends AuthValidator{
   @override
   FutureOr<Authorization> validate<T>(AuthorizationParser<T> parser, T authorizationData, {List<AuthScope> requiredScope}) async {
     String _token = authorizationData.toString();

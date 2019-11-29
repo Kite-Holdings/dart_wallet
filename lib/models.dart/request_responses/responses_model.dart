@@ -6,16 +6,16 @@ class ResponsesModel{
     this.requestId,
     this.responseType,
     this.responseBody,
-    this.statusCode,
-    this.statusMessage,
+    this.status,
   });
 
   final String requestId;
   final ResposeType responseType;
-  final int statusCode;
-  final String statusMessage;
+  final ResponsesStatus status;
   final dynamic responseBody;
 
+  int _statusCode;
+  String _statusMessage;
 
 
 
@@ -27,6 +27,10 @@ class ResponsesModel{
       "requestId": requestId,
       "responseType": _stringReponseType(),
       "responseBody": responseBody,
+      "status": {
+        "statusCode": _stringResponsesModelStatus().code,
+        "statusMessage": _stringResponsesModelStatus().message,
+      }
     };
   }
 
@@ -35,15 +39,21 @@ class ResponsesModel{
       requestId: object['requestId'].toString(),
       responseType: _toResponseType(object['responseType'].toString()),
       responseBody: object['responseBody'],
+      status: _toResponseState(object['status']),
     );
   }
 
 
   Future<String> save() async{
     final ObjectId _id = ObjectId();
+
+    _statusCode = _stringResponsesModelStatus().code;
+    _statusMessage = _stringResponsesModelStatus().message;
     await _databaseBridge.save({
       '_id': _id,
       "requestId": requestId,
+      "statusCode": _statusCode,
+      "statusMessage": _statusMessage,
       "responseType": _stringReponseType(),
       "responseBody": responseBody,
     });
@@ -67,7 +77,32 @@ class ResponsesModel{
   }
 
 
+  ResponsesStatusModel _stringResponsesModelStatus(){
+    switch (status) {
+      case ResponsesStatus.success: 
+        return ResponsesStatusModel(code: 0, message: 'success');
+        break;
+      case ResponsesStatus.information: 
+        return ResponsesStatusModel(code: 1, message: 'information');
+        break;
+      case ResponsesStatus.warning: 
+        return ResponsesStatusModel(code: 2, message: 'warning');
+        break;
+      case ResponsesStatus.failed: 
+        return ResponsesStatusModel(code: 101, message: 'failed');
+        break;
+      default:
+        return ResponsesStatusModel(code: 102, message: 'notDefined');
+    }
+  }
 
+  ResponsesStatus _toResponseState(dynamic value){
+    if(int.parse(value['statusCode'].toString())== 0){return ResponsesStatus.success;}
+    else if(int.parse(value['statusCode'].toString())== 1){return ResponsesStatus.information;}
+    else if(int.parse(value['statusCode'].toString())== 2){return ResponsesStatus.warning;}
+    else if(int.parse(value['statusCode'].toString())== 101){return ResponsesStatus.failed;}
+    else {return ResponsesStatus.notDefined;}
+  }
 
 
   String _stringReponseType(){
@@ -115,11 +150,25 @@ class ResponsesModel{
   }
 }
 
+class ResponsesStatusModel{
+  ResponsesStatusModel({this.code, this.message});
+  final int code;
+  final String message;
+}
+
 enum ResposeType{
   callBack,
   card,
   mpesaStkPush,
   stkQuery,
   token,
+  notDefined
+}
+
+enum ResponsesStatus{
+  success,
+  information,
+  warning,
+  failed,
   notDefined
 }
