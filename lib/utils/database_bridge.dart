@@ -63,7 +63,7 @@ class DatabaseBridge{
   // Find one
   Future<Map<String, dynamic>> findOneBy(SelectorBuilder selector) async {
     await _db.open();
-    final Map<String, dynamic> _m =await _dbCollection.findOne(selector, );
+    final Map<String, dynamic> _m =await _dbCollection.findOne(selector);
     await _db.close();
     return _m;
     // return _findOpertations(selector, OpertationType.findOne);
@@ -95,9 +95,14 @@ class DatabaseBridge{
       switch (opertationType) {
         case OpertationType.save:
           _response['body'] = await _dbCollection.insert(obj);
+          print(_response['body']);
+          print(obj);
+          print('..........s..........');
           break;
         case OpertationType.insert:
           _response['body'] = await _dbCollection.insert(obj);
+          print(_response['body']);
+          print('.........i...........');
           break;
         default:
           _response['body'] = {};
