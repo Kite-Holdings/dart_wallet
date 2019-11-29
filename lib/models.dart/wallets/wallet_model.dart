@@ -86,7 +86,7 @@ class WalletModel{
       return {
         "status": "success",
         "balance": double.parse(_info['balance'].toString()),
-        "_id": _info['_id']
+        "_id": _info['_id'].toString().split('"')[1]
       };
     } catch(e){
       return {
@@ -114,7 +114,7 @@ class WalletModel{
       return {
         "status": "success",
         "balance": double.parse(_info['balance'].toString()),
-        "_id": _info['_id']
+        "_id": _info['_id'].toString().split('"')[1]
       };
     }catch(e){
       return {
