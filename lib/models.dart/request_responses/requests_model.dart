@@ -39,17 +39,15 @@ class RequestsModel{
 
 
   Future<String> save() async{
-    print("////////////////////////");
     final ObjectId _id = ObjectId();
-    print(await _databaseBridge.save({
+    await _databaseBridge.save({
       '_id': _id,
       "url": url,
       "account": account,
       "requestType": _stringRequestType(),
       "metadata": metadata,
       "transactionType": _stringReqTransType(),
-    }));
-    print("////////////////////////");
+    });
     return _id.toJson();
   }
 

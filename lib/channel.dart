@@ -80,7 +80,6 @@ class EPayGatewayChannel extends ApplicationChannel {
     router
       .route("/success")
       .linkFunction((request)async{
-      print(await request.body.decode());
       return Response.ok({"message": "done!"});
     });
 
