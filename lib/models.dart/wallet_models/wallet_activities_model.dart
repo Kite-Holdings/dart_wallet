@@ -31,7 +31,7 @@ class WalletActivitiesModel{
 
   final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'walletTransactionActivities');
 
-  get walletActivityAction => (){
+  String get walletActivityAction {
     if(action == WalletActivityAction.received){
       return "received";
     } else if(action == WalletActivityAction.sent){
@@ -40,7 +40,7 @@ class WalletActivitiesModel{
     else{
       return "unknown";
     }
-  };
+  }
 
   Future<Map<String, dynamic>> save()async{
     timeStamp = DateTime.now();
