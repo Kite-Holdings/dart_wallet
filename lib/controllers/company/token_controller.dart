@@ -8,6 +8,7 @@ import 'package:pedantic/pedantic.dart';
 class TokenController extends ResourceController{
   @Operation.get()
   Future<Response> getToken()async{
+    if(request.authorization.clientID != null){
     final TokenModel _tokenModel = TokenModel();
 
     final CompanyModel _companyModel = CompanyModel();
@@ -37,5 +38,8 @@ class TokenController extends ResourceController{
     unawaited(_responsesModel.save());
     
     return Response.ok(_res);
+    } else {
+      return Response.unauthorized(body: {"message": "Wrong credentials"});
+    }
   }
 }

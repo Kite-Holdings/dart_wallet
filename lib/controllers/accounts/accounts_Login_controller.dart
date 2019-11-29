@@ -8,6 +8,7 @@ import 'package:pedantic/pedantic.dart';
 class AccountsLoginController extends ResourceController{
   @Operation.get()
   Future<Response> getToken()async{
+    if(request.authorization.clientID != null){
     final TokenModel _tokenModel = TokenModel();
 
     final AccountModel _accountModel = AccountModel();
@@ -15,7 +16,7 @@ class AccountsLoginController extends ResourceController{
 
 
     final RequestsModel _requestsModel = RequestsModel(
-      url: '/accounts/login',
+      url: '/token',
       requestType: RequestType.token,
       account: _account['address']['email'].toString(),
       metadata: {
@@ -38,6 +39,10 @@ class AccountsLoginController extends ResourceController{
     unawaited(_responsesModel.save());
     
     return Response.ok(_res);
+    } else {
+
+      return Response.unauthorized(body: {"message": "Wrong credentials"});
+    }
   }
 
 }
