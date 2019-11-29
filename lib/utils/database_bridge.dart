@@ -16,6 +16,7 @@ class DatabaseBridge{
   final String collectionName;
   Db _db;
   DbCollection _dbCollection;
+  
 
   // Save
   Future<Map<String, dynamic>> save(Map<String, dynamic> obj) async {
@@ -94,11 +95,11 @@ class DatabaseBridge{
     try{
       switch (opertationType) {
         case OpertationType.save:
-          _response['body'] = await _dbCollection.insert(obj);
+          _response['body'] = await _dbCollection.save(obj);
           
           break;
         case OpertationType.insert:
-          _response['body'] = await _dbCollection.insert(obj);
+          _response['body'] = await _dbCollection.save(obj);
           break;
         default:
           _response['body'] = {};

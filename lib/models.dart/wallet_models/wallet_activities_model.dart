@@ -29,7 +29,7 @@ class WalletActivitiesModel{
   final double balance;
   DateTime timeStamp;
 
-  final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'wallet_transaction_activities');
+  final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'walletTransactionActivities');
 
   get walletActivityAction => (){
     if(action == WalletActivityAction.received){
