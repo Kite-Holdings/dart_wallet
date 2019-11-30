@@ -4,7 +4,7 @@ import 'package:e_pay_gateway/third_party_operations/mpesa/stkPushQueryRequest.d
 import 'package:e_pay_gateway/utils/database_bridge.dart';
 
 Future<void> checkStkProcessStatus() async {
-  const int _duration = 180000;
+  const int _duration = 30000;
 
   final DatabaseBridge _databaseBridge = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'stkPushProcesses');
   final Map<String, dynamic> _map = await _databaseBridge.findBy(where.eq('processState', 'pending'));
