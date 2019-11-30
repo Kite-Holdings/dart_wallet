@@ -21,6 +21,7 @@ import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_buy_goods_services
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_paybill.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_mpesa_phone_no.dart';
 import 'package:e_pay_gateway/controllers/wallet/wallet_wallet.dart';
+import 'package:e_pay_gateway/html_template/card_success.dart';
 import 'package:e_pay_gateway/third_party_operations/airtel_kenya/enroll.dart';
 import 'package:e_pay_gateway/third_party_operations/cellulant/validate_account.dart';
 import 'package:e_pay_gateway/third_party_operations/mpesa/c_b_deposit.dart';
@@ -29,6 +30,7 @@ import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/io_client.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
+
 
 import 'e_pay_gateway.dart';
 
@@ -66,8 +68,15 @@ class EPayGatewayChannel extends ApplicationChannel {
       .route("/")
       .link(() => Authorizer.bearer(BearerAouthVerifier()))
       .linkFunction((request)async{
-        
-      return Response.ok({'hi': 'hi'});
+      return Response.ok({'message': "Hello"});
+    });
+
+    router
+      .route("/cardSuccess")
+      .linkFunction((request)async{
+        var response = Response.ok(htmlTemplate)
+          ..contentType = ContentType.html;
+      return response;
     });
     // test
     router
