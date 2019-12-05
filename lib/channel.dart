@@ -338,10 +338,13 @@ class EPayGatewayChannel extends ApplicationChannel {
       router
         .route('/wallet/transactions/:walletNo')
         .linkFunction((request)async{
-          final DatabaseBridge _dbb = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'walletTransactionActivities');
-          final Map<String, dynamic> _map = await _dbb.findBy(where.eq('walletDetails.walletNo', request.path.variables['walletNo']));
+          final DatabaseBridge _dbb = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'transactions');
+          final Map<String, dynamic> _map = await _dbb.findBy(
+            where.eq('senderInfo.walletDetails.walletNo', request.path.variables['walletNo'])
+            .or(where.eq('recipientInfo.walletDetails.walletNo', request.path.variables['walletNo'])));
           final _newmap = _map['body'].map((item){
-            item['timeStamp'] = item['timeStamp'].toString();
+            item['senderInfo']['timeStamp'] = item['senderInfo']['timeStamp'].toString();
+            item['recipientInfo']['timeStamp'] = item['recipientInfo']['timeStamp'].toString();
             return item;
           }).toList();
           return Response.ok(_newmap);
