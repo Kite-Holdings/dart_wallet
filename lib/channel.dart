@@ -29,6 +29,7 @@ import 'package:e_pay_gateway/utils/database_bridge.dart';
 import 'package:http/io_client.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 import 'e_pay_gateway.dart';
 
@@ -165,6 +166,27 @@ class EPayGatewayChannel extends ApplicationChannel {
         }).toList();
       return Response.ok(_newmap);
     });
+    router
+      .route("/responsesLast")
+      .linkFunction((request)async{
+        final  _db = Db(databaseUrl);
+        final _dbCollection = _db.collection('allRequests');
+        await _db.open();
+        final List<Map<String, dynamic>> _map = await _dbCollection.find(where.eq("metadata.walletAccountNo", '002100000002').sortBy('_id', descending: true).fields(['_id']).limit(20)).toList();
+        final List _reqId = _map.map((item){
+          return item['_id'];
+        }).toList();
+        final List<Map<String, dynamic>> _responses = [];
+        final _dbCollectionReq = _db.collection('allResponses');
+        
+        for(var item in _reqId){
+          _responses.addAll(await _dbCollectionReq.find(where.eq("requestId", item.toJson())).toList());
+          
+        }
+        
+        await _db.close();
+        return Response.ok({"req": _responses});
+      });
 
     // Accounts
     // consumer
