@@ -154,6 +154,22 @@ class EPayGatewayChannel extends ApplicationChannel {
         }).toList();
       return Response.ok(_newmap);
     }); 
+
+    router
+          .route("/requests/:requestId")
+          .linkFunction((request)async{
+            final DatabaseBridge _dbb = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'allRequests');
+            final Map<String, dynamic> _map = await _dbb.findBy(where.id(ObjectId.parse(request.path.variables['requestId'])));
+            final _newmap = _map['body'].map((item){
+              final ObjectId _id = ObjectId.parse(item['_id'].toString().split('"')[1]);
+              item['date'] = _id.dateTime.toString();
+              return item;
+            }).toList();
+          return Response.ok(_newmap);
+        }); 
+
+
+
     router
       .route("/responses")
       .linkFunction((request)async{
@@ -166,6 +182,22 @@ class EPayGatewayChannel extends ApplicationChannel {
         }).toList();
       return Response.ok(_newmap);
     });
+
+
+    router
+      .route("/responses/requestId/:requestId")
+      .linkFunction((request)async{
+        DatabaseBridge _dbb = DatabaseBridge(dbUrl: databaseUrl, collectionName: 'allResponses');
+        final Map<String, dynamic> _map = await _dbb.findBy(where.eq('requestId', request.path.variables['requestId']));
+        final _newmap = _map['body'].map((item){
+          final ObjectId _id = ObjectId.parse(item['_id'].toString().split('"')[1]);
+          item['date'] = _id.dateTime.toString();
+          return item;
+        }).toList();
+      return Response.ok(_newmap);
+    });
+
+
     router
       .route("/responsesLast")
       .linkFunction((request)async{
